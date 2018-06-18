@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="movie_image">Movie Image</string>
+    <string name="most_popular">Most Popular</string>
+    <string name="highest_rating">Highest Rating</string>
+    <string name="sortby">Sort By</string>
+    <string name="release_date">Release Date:</string>
+    <string name="error_message">Error occurred - check permissions or network connection.</string>
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="detailBodyIndent">8dp</dimen>
+    <dimen name="imageHeight">230dp</dimen>
+    <dimen name="originalTitleTextSize">30sp</dimen>
+    <dimen name="errorMessageTextSize">20sp</dimen>
+</resources>
