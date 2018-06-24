@@ -1,5 +1,12 @@
 package com.example.android.popularmoviesstageone.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatDelegate;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
@@ -15,6 +22,7 @@ import java.util.List;
 /**
  * Movie is a template for the items in the data model.
  */
+@Entity(tableName = "favorite_movies")
 @Parcel
 public class Movie {
 
@@ -23,6 +31,12 @@ public class Movie {
     public static final String BACKDROP_PATH = "https://image.tmdb.org/t/p/w780/%s";
 
     // @SerializedName tells Gson matching json/pojo properties
+    @SerializedName("id")
+    @PrimaryKey
+    @ColumnInfo(name = "movie_id")
+    @NonNull
+    private String id;
+
     @SerializedName("poster_path")
     private String posterPath;
 
@@ -30,7 +44,7 @@ public class Movie {
     private String backdropPath;
 
     @SerializedName("original_title")
-    String originalTitle;
+    private String originalTitle;
 
     @SerializedName("overview")
     private String overview;
@@ -44,6 +58,7 @@ public class Movie {
     public Movie() {}
 
     public Movie(JSONObject jsonObject) {
+        this.id = jsonObject.optString("id");
         this.posterPath = jsonObject.optString("poster_path");
         this.originalTitle = jsonObject.optString("original_title");
         this.overview = jsonObject.optString("overview");
@@ -52,6 +67,25 @@ public class Movie {
         this.backdropPath = jsonObject.optString("backdrop_path");
     }
 
+    // Constructor to be used to create an entity
+    public Movie(String movieId, String posterPath, String originalTitle,
+                 String overview, double voteAverage, String releaseDate, String backdropPath) {
+        this.id = movieId;
+        this.posterPath = posterPath;
+        this.originalTitle = originalTitle;
+        this.overview = overview;
+        this.voteAverage = voteAverage;
+        this.releaseDate = releaseDate;
+        this.backdropPath = backdropPath;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(@NonNull String movieId) {
+        this.id = movieId;
+    }
     /**
      * Returns a formatted URL for the poster image
      * @return Formatted Image URL
@@ -60,6 +94,9 @@ public class Movie {
         return String.format(POSTER_PATH, posterPath);
     }
 
+    public void setPosterPath(String path) {
+        this.posterPath = path;
+    }
     /**
      * Returns a formatted URL for the backdrop image
      * @return Formatted Image URL
@@ -72,12 +109,20 @@ public class Movie {
         return String.format(BACKDROP_PATH, path);
     }
 
+    public void setBackdropPath(String path) {
+        this.backdropPath = path;
+    }
+
     /**
      * Returns the movie title
      * @return String representing movie title
      */
     public String getOriginalTitle() {
         return originalTitle;
+    }
+
+    public void setOriginalTitle(String title) {
+        this.originalTitle = title;
     }
 
     /**
@@ -88,6 +133,10 @@ public class Movie {
         return overview;
     }
 
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
     /**
      * Returns the movie release date
      * @return String representing movie release date
@@ -96,12 +145,20 @@ public class Movie {
         return releaseDate;
     }
 
+    public void setReleaseDate(String date) {
+        this.releaseDate = date;
+    }
+
     /**
      * Returns the movie vote average
      * @return Double representing movie vote average
      */
     public Double getVoteAverage() {
         return voteAverage;
+    }
+
+    public void setVoteAverage(Double average) {
+        this.voteAverage = average;
     }
 
     public static class MovieResult {

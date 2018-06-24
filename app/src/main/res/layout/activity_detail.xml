@@ -84,6 +84,31 @@
             app:layout_constraintStart_toStartOf="@+id/tvReleaseDateLabel"
             app:layout_constraintTop_toBottomOf="@+id/tvReleaseDateLabel" />
 
+        <Button
+            android:id="@+id/btFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:height="8dp"
+            android:width="4dp"
+            android:visibility="gone"
+            android:layout_marginRight="@dimen/detailBodyIndent"
+            android:layout_marginEnd="@dimen/detailBodyIndent"
+            android:layout_marginTop="@dimen/detailBodyIndent"
+            android:background="@drawable/ic_star_border_black_24dp"
+            app:layout_constraintRight_toRightOf="@id/ivMovieImage"
+            app:layout_constraintTop_toTopOf="@id/ivMovieImage" />
+
+        <ToggleButton
+            android:id="@+id/tbFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:foregroundGravity="right"
+            android:gravity="right"
+            style="@style/toggleButton"
+            android:background="@drawable/ic_toggle"
+            app:layout_constraintRight_toRightOf="@id/ivMovieImage"
+            app:layout_constraintTop_toTopOf="@id/ivMovieImage"/>
+
     </android.support.constraint.ConstraintLayout>
 
 </ScrollView>

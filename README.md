@@ -34,6 +34,8 @@ These are the websites/sources that were used as references.
 - [How to add interceptor in Retrofit 2.0](https://mobikul.com/use-interceptor-add-headers-body-retrofit-2-0/)
 - [Retrofit 2 - How to Add Query Parameters to Every Requst](https://futurestud.io/tutorials/retrofit-2-how-to-add-query-parameters-to-every-request)
 - [Leveraging the Gson Library](https://guides.codepath.com/android/Leveraging-the-Gson-Library)
+- (https://www.dev2qa.com/android-togglebutton-example/)
+[Custom Toggle Button](http://mohsenoid.blog/how-to-create-a-toggle-button-with-custom-image-and-no-text-in-android/)
 
 ## Notes
 An API key is required to fetch data from themovieDB API. The key is specified in the file `NetworkUtils.java`.

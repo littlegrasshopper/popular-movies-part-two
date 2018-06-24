@@ -1,11 +1,13 @@
 package com.example.android.popularmoviesstageone;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -21,7 +23,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmoviesstageone.adapter.MovieArrayAdapter;
+import com.example.android.popularmoviesstageone.database.AppDatabase;
+import com.example.android.popularmoviesstageone.database.FavoritesEntry;
 import com.example.android.popularmoviesstageone.model.Movie;
+import com.example.android.popularmoviesstageone.model.ShowFavoritesViewModel;
 import com.example.android.popularmoviesstageone.service.MoviesApiService;
 import com.example.android.popularmoviesstageone.utilities.MovieJsonUtils;
 import com.example.android.popularmoviesstageone.utilities.NetworkUtils;
@@ -68,6 +73,7 @@ public class MovieActivity extends AppCompatActivity
 
     private MovieArrayAdapter mMovieAdapter;
     private Subscription subscription;
+    private AppDatabase mDb;
 
     @BindView(R.id.rvMovies) RecyclerView mMoviesRecyclerView;
     @BindView(R.id.tbToolbar) android.support.v7.widget.Toolbar mToolbar;
@@ -141,6 +147,11 @@ public class MovieActivity extends AppCompatActivity
      * @param category
      */
     private void getMovies(String category) {
+        if (category == NetworkUtils.FAVORITES) {
+            setupViewModel();
+            // TODO: Retrieve movies given the ids in the favorites
+            return;
+        }
         subscription = MovieClient.getInstance()
                 .getMovies(category)
                 // scheduler where the Observable will do the work
@@ -170,6 +181,32 @@ public class MovieActivity extends AppCompatActivity
                         mMovieAdapter.setMovieData(movieResults.getResults());
                     }
                 });
+    }
+
+    // TODO
+    // Retrieve a list of favorites from the db using Executor
+    // Retrieve the list of movies using the favorites IDs
+    // set the list of movies to the adapter in the UI thread
+    private void setupViewModel() {
+        mDb = AppDatabase.getsInstance(getApplicationContext());
+        ShowFavoritesViewModel viewModel = ViewModelProviders
+                .of(this)
+                .get(ShowFavoritesViewModel.class);
+        viewModel.getFavorites()
+                .observe(this, new android.arch.lifecycle.Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable final List<Movie> favoritesEntries) {
+                Log.d(TAG, "Updating list of favorites from LiveData in ViewModel");
+                //mMovieAdapter.setFavorites(favoritesEntries);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMovieAdapter.setFavorites(favoritesEntries);
+                    }
+                });
+                // TODO: See 12.13 4:29 this needs to be run on the UI thread
+            }
+        });
     }
     /**
      * Show the view for the movies data and hide the error message display.
