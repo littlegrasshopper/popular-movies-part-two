@@ -50,15 +50,12 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.detailToolbar) android.support.v7.widget.Toolbar mToolbar;
 
     // Extra for the movie ID to be received in the intent
-    public static final String EXTRA_MOVIE_ID = "extraMovieId";
+    public static final String EXTRA_MOVIE = "extraMovie";
     // Extra for the movie ID to be received after rotation
-    public static final String INSTANCE_MOVIE_ID = "instanceMovieId";
-
-    // Constant for default entry id to be used when not in update mode
-    private static final String DEFAULT_MOVIE_ID = "-1";
+    public static final String INSTANCE_MOVIE = "instanceMovie";
 
     private AppDatabase mDb;
-    private String mMovieId = DEFAULT_MOVIE_ID;
+    private String mMovieId;
     private Movie movie;
 
     @Override
@@ -75,16 +72,17 @@ public class DetailActivity extends AppCompatActivity {
 
         mDb = AppDatabase.getsInstance(getApplicationContext());
 
-
-        if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_MOVIE_ID)) {
-            mMovieId = savedInstanceState.getString(INSTANCE_MOVIE_ID, DEFAULT_MOVIE_ID);
+        if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_MOVIE)) {
+            movie = Parcels.unwrap(savedInstanceState.getParcelable(INSTANCE_MOVIE));
         }
 
         // Get the passed in intent
         Intent intent = getIntent();
 
-        if (intent != null && intent.hasExtra(Movie.MOVIE_EXTRA)) {
-            movie = Parcels.unwrap(getIntent().getParcelableExtra(Movie.MOVIE_EXTRA));
+        if (intent != null && intent.hasExtra(EXTRA_MOVIE)) {
+            if (movie == null) {
+                movie = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_MOVIE));
+            }
 
             mMovieId = movie.getId();
             mOverview.setText(movie.getOverview());
@@ -113,32 +111,7 @@ public class DetailActivity extends AppCompatActivity {
             // Credit: https://stackoverflow.com/questions/2874537/how-to-make-a-smaller-ratingbar
             mRating.setRating((int) Math.round(movie.getVoteAverage()));
 
-            // Update the favorite status if needed
-            //AppExecutors.getInstance().diskIO().execute(new Runnable() {
-               // @Override
-                //public void run() {
-            /*
-                    final LiveData<Movie> favoriteMovie = mDb.favoritesDao().loadFavoritesById(mMovieId);
-                    favoriteMovie.observe(this, new Observer<Movie>() {
-                        @Override
-                        public void onChanged(@Nullable Movie movie) {
-                            populateUI(favoriteMovie);
-                            Log.d(TAG, "Receiving database update for single favorite movie");
-                            favoriteMovie.removeObserver(this); // ?????
-                        }
-                    });
-                    */
-                    //runOnUiThread(new Runnable() {
-                        //@Override
-                        //public void run() {
-                            //Toast.makeText(getApplicationContext(), "Hello I am in runonuithread", Toast.LENGTH_SHORT);
-                            //populateUI(favoriteMovie);
-
-                        //}
-                    //});
-                //}
-            //});
-
+            // Update the favorite status
             // Credit: Udacity Lesson 12 Android Architecture Components
             // === Start ===
             FavoritesViewModelFactory factory = new FavoritesViewModelFactory(mDb, mMovieId);
@@ -155,27 +128,43 @@ public class DetailActivity extends AppCompatActivity {
             });
             // === End ===
 
+            // Listen for user tapping on favorite button
             mFavorite.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    final boolean isChecked = checked;
+                    boolean isChecked = checked;
                     Log.d(TAG, "check changed: " + isChecked);
-                    final boolean existsInDB = isFavorite();
+                    boolean existsInDB = isFavorite();
 
-                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (isChecked) {
-                                if (!existsInDB) {
+                    FavoritesViewModelFactory factory = new FavoritesViewModelFactory(mDb, mMovieId);
+                    Log.d(TAG, "isFavorite(): movie_id: " + mMovieId);
+                    AddDeleteFavoritesViewModel model = ViewModelProviders
+                            .of(DetailActivity.this, factory)
+                            .get(AddDeleteFavoritesViewModel.class);
+                    existsInDB = model.getFavorite() != null && (model.getFavorite().getValue() != null);
+                    Log.d(TAG, "exists in DB: " + existsInDB);
+
+                    if (isChecked) {
+                        if (!existsInDB) {
+                            Log.d(TAG, "doesn't exist in DB, adding");
+                            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                                @Override
+                                public void run() {
                                     mDb.favoritesDao().insertFavorites(movie);
                                 }
-                            } else {
-                                if (existsInDB) {
+                            });
+                        }
+                    } else {
+                        if (existsInDB) {
+                            Log.d(TAG, "exists in DB, deleting");
+                            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                                @Override
+                                public void run() {
                                     mDb.favoritesDao().deleteFavorites(movie);
                                 }
-                            }
+                            });
                         }
-                    });
+                    }
 
 
                     /*
@@ -210,22 +199,19 @@ public class DetailActivity extends AppCompatActivity {
                 }
             });
 
-
-
-
         }
     }
 
     private boolean isFavorite() {
         boolean isFavorite = false;
         FavoritesViewModelFactory factory = new FavoritesViewModelFactory(mDb, mMovieId);
-        final AddDeleteFavoritesViewModel model = ViewModelProviders
+        Log.d(TAG, "isFavorite(): movie_id: " + mMovieId);
+        AddDeleteFavoritesViewModel model = ViewModelProviders
                 .of(this, factory)
                 .get(AddDeleteFavoritesViewModel.class);
         isFavorite = model.getFavorite() != null && (model.getFavorite().getValue() != null);
         return isFavorite;
     }
-
 
     private void populateUI(Movie fav) {
         if (fav == null) {
@@ -239,7 +225,7 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(Movie.MOVIE_EXTRA, Parcels.wrap(movie));
+        outState.putParcelable(INSTANCE_MOVIE, Parcels.wrap(movie));
         super.onSaveInstanceState(outState);
     }
 }

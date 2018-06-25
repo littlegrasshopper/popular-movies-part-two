@@ -5,13 +5,13 @@ Android app to display a list of popular or highest-rated movies via [the MovieD
 ## User Stories
 * [ ] User can view and play trailers via the YouTube app.
 * [ ] User can read reviews of a selected movie.
-* [ ] User can mark a movie as a favorite in the details view by tapping a button (star).
+* [x] User can mark a movie as a favorite in the details view by tapping a button (star).
 * [ ] User can sort movies by their favorites collection as well.
 
 ## Required Features
-* [ ] Create a database and content provider to store the names and ids of the user's favorite movies.
-* [ ] App should work either in portrait or landscape mode.
-* [ ] Use onSaveInstanceState/onRestoreInstanceState to recreate Activities.
+* [x] Create a database and content provider to store the names and ids of the user's favorite movies.
+* [x] App should work either in portrait or landscape mode.
+* [x] Use onSaveInstanceState/onRestoreInstanceState to recreate Activities.
 * [ ] When a trailer is selected, the app uses an intent to launch the trailer.
 
 ## Optional Features

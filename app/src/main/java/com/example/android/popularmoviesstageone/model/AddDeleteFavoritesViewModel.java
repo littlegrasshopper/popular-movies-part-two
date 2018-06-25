@@ -14,8 +14,8 @@ public class AddDeleteFavoritesViewModel extends ViewModel {
 
     private LiveData<Movie> favorite;
 
-    public AddDeleteFavoritesViewModel(AppDatabase database, String movieId) {
-        favorite = database.favoritesDao().loadFavoritesById(movieId);
+    public AddDeleteFavoritesViewModel(AppDatabase database, String movie_id) {
+        favorite = database.favoritesDao().loadFavoritesById(movie_id);
     }
 
     public LiveData<Movie> getFavorite() {

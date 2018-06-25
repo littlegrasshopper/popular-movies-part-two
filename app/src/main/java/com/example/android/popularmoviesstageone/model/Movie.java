@@ -26,7 +26,6 @@ import java.util.List;
 @Parcel
 public class Movie {
 
-    public static final String MOVIE_EXTRA = "movie";
     public static final String POSTER_PATH = "https://image.tmdb.org/t/p/w342/%s";
     public static final String BACKDROP_PATH = "https://image.tmdb.org/t/p/w780/%s";
 
@@ -183,4 +182,5 @@ public class Movie {
             return res;
         }
     }
+
 }

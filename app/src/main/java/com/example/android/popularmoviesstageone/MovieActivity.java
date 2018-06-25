@@ -39,6 +39,7 @@ import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -183,6 +184,12 @@ public class MovieActivity extends AppCompatActivity
                 });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //setupViewModel();
+    }
+
     // TODO
     // Retrieve a list of favorites from the db using Executor
     // Retrieve the list of movies using the favorites IDs
@@ -201,7 +208,8 @@ public class MovieActivity extends AppCompatActivity
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mMovieAdapter.setFavorites(favoritesEntries);
+                        //mMovieAdapter.setFavorites(favoritesEntries);
+                        mMovieAdapter.setMovieData((ArrayList<Movie>)favoritesEntries);
                     }
                 });
                 // TODO: See 12.13 4:29 this needs to be run on the UI thread
@@ -302,7 +310,7 @@ public class MovieActivity extends AppCompatActivity
         Context context = MovieActivity.this;
         Intent intent = new Intent(context, destinationActivity);
 
-        intent.putExtra(Movie.MOVIE_EXTRA, Parcels.wrap(movie));
+        intent.putExtra(DetailActivity.EXTRA_MOVIE, Parcels.wrap(movie));
         startActivity(intent);
     }
 }

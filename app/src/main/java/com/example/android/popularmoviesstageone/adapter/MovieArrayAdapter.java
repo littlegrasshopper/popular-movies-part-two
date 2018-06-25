@@ -112,7 +112,8 @@ public class MovieArrayAdapter extends
     }
 
     public void setFavorites(List<Movie> favoritesEntries) {
-        mFavoritesEntries = favoritesEntries;
+        //mFavoritesEntries = favoritesEntries;
+        mMovies = mFavoritesEntries;
         notifyDataSetChanged();
     }
 

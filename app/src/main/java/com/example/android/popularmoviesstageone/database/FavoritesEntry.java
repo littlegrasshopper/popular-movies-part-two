@@ -9,7 +9,7 @@ import android.arch.persistence.room.PrimaryKey;
  * Created by fonda on 6/18/18.
  */
 
-@Entity(tableName = "favorites")
+@Entity(tableName = "favorite_movies")
 public class FavoritesEntry {
 
     @PrimaryKey
