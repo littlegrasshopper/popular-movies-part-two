@@ -73,6 +73,38 @@
             app:layout_constraintTop_toTopOf="@+id/tvReleaseDateLabel" />
 
         <TextView
+            android:id="@+id/tvOverviewHeading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/plot"
+            android:layout_marginTop="@dimen/detailBodyIndent"
+            app:layout_constraintStart_toStartOf="@+id/tvReleaseDateLabel"
+            app:layout_constraintTop_toBottomOf="@+id/tvReleaseDateLabel"
+            />
+        <include android:id="@+id/vOverviewDivider"
+            android:layout_width = "match_parent"
+            android:layout_height=".5dp"
+            layout="@layout/horizontal_divider"
+            android:background="@android:color/darker_gray"
+
+            app:layout_constraintTop_toBottomOf="@id/tvOverviewHeading"
+            app:layout_constraintStart_toStartOf="@id/tvOverviewHeading"
+            />
+
+        <View
+            android:visibility="gone"
+            android:id="@+id/vOverviewDivider"
+            android:layout_width = "match_parent"
+            android:layout_height=".5dp"
+            android:layout_marginLeft="@dimen/detailBodyIndent"
+            android:layout_marginStart="@dimen/detailBodyIndent"
+            android:layout_marginRight="@dimen/detailBodyIndent"
+            android:layout_marginEnd="@dimen/detailBodyIndent"
+            android:background="@android:color/darker_gray"
+            app:layout_constraintStart_toStartOf="@+id/tvOverviewHeading"
+            app:layout_constraintTop_toBottomOf="@+id/tvOverviewHeading"/>
+
+        <TextView
             android:id="@+id/tvOverview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,7 +114,7 @@
             android:layout_marginEnd="@dimen/detailBodyIndent"
             android:layout_marginTop="@dimen/detailBodyIndent"
             app:layout_constraintStart_toStartOf="@+id/tvReleaseDateLabel"
-            app:layout_constraintTop_toBottomOf="@+id/tvReleaseDateLabel" />
+            app:layout_constraintTop_toBottomOf="@+id/vOverviewDivider" />
 
         <Button
             android:id="@+id/btFavorite"
@@ -94,20 +126,37 @@
             android:layout_marginRight="@dimen/detailBodyIndent"
             android:layout_marginEnd="@dimen/detailBodyIndent"
             android:layout_marginTop="@dimen/detailBodyIndent"
-            android:background="@drawable/ic_star_border_black_24dp"
+            android:background="@drawable/ic_star_border_white_24dp"
             app:layout_constraintRight_toRightOf="@id/ivMovieImage"
             app:layout_constraintTop_toTopOf="@id/ivMovieImage" />
 
         <ToggleButton
             android:id="@+id/tbFavorite"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:foregroundGravity="right"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:gravity="right"
+            android:layout_marginTop="@dimen/detailBodyIndent"
+            android:layout_marginRight="@dimen/detailBodyIndent"
             style="@style/toggleButton"
             android:background="@drawable/ic_toggle"
             app:layout_constraintRight_toRightOf="@id/ivMovieImage"
             app:layout_constraintTop_toTopOf="@id/ivMovieImage"/>
+
+        <include android:id="@+id/movieTrailer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
+            layout="@layout/movie_trailers"
+            app:layout_constraintStart_toStartOf="@id/tvOverview"
+            app:layout_constraintTop_toBottomOf="@id/tvOverview"/>
+
+        <include android:id="@+id/movieReview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="12dp"
+            layout="@layout/movie_reviews"
+            app:layout_constraintStart_toStartOf="@id/movieTrailer"
+            app:layout_constraintTop_toBottomOf="@id/movieTrailer"/>
 
     </android.support.constraint.ConstraintLayout>
 

@@ -1,18 +1,13 @@
 package com.example.android.popularmoviesstageone.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.android.popularmoviesstageone.R;
-import com.example.android.popularmoviesstageone.database.FavoritesEntry;
 import com.example.android.popularmoviesstageone.model.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -40,7 +35,7 @@ public class MovieArrayAdapter extends
 
     private final MovieArrayAdapterOnClickHandler mClickHandler;
 
-    private List<Movie> mMovies;
+    private List<Movie> mMovies = new ArrayList<>();
 
     private List<Movie> mFavoritesEntries;
 
@@ -97,7 +92,8 @@ public class MovieArrayAdapter extends
     }
 
     public void setMovieData(ArrayList<Movie> movieData) {
-        mMovies = movieData;
+        mMovies.clear();
+        mMovies.addAll(movieData);
         notifyDataSetChanged();
     }
 

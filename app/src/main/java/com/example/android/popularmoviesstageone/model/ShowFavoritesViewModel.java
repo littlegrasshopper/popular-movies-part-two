@@ -6,9 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.util.Log;
 
 import com.example.android.popularmoviesstageone.database.AppDatabase;
-import com.example.android.popularmoviesstageone.database.FavoritesEntry;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

@@ -2,6 +2,7 @@ package com.example.android.popularmoviesstageone.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -54,8 +55,16 @@ public class Movie {
     @SerializedName("vote_average")
     private double voteAverage;
 
+    @Ignore
+    private ArrayList<MovieTrailer> trailers;
+
+    @Ignore
+    private ArrayList<MovieReview> reviews;
+
+
     public Movie() {}
 
+    @Ignore
     public Movie(JSONObject jsonObject) {
         this.id = jsonObject.optString("id");
         this.posterPath = jsonObject.optString("poster_path");
@@ -158,6 +167,22 @@ public class Movie {
 
     public void setVoteAverage(Double average) {
         this.voteAverage = average;
+    }
+
+    public ArrayList<MovieReview> getReviews() {
+        return this.reviews;
+    }
+
+    public void setReviews(ArrayList<MovieReview> reviews) {
+        this.reviews = reviews;
+    }
+
+    public ArrayList<MovieTrailer> getTrailers() {
+        return this.trailers;
+    }
+
+    public void setTrailers(ArrayList<MovieTrailer> trailers) {
+        this.trailers = trailers;
     }
 
     public static class MovieResult {

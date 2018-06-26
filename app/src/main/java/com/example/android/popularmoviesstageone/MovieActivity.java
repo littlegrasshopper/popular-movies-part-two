@@ -3,7 +3,6 @@ package com.example.android.popularmoviesstageone;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -13,51 +12,32 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.android.popularmoviesstageone.adapter.MovieArrayAdapter;
 import com.example.android.popularmoviesstageone.database.AppDatabase;
-import com.example.android.popularmoviesstageone.database.FavoritesEntry;
 import com.example.android.popularmoviesstageone.model.Movie;
 import com.example.android.popularmoviesstageone.model.ShowFavoritesViewModel;
-import com.example.android.popularmoviesstageone.service.MoviesApiService;
 import com.example.android.popularmoviesstageone.utilities.MovieJsonUtils;
 import com.example.android.popularmoviesstageone.utilities.NetworkUtils;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
+import com.facebook.stetho.Stetho;
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.HttpException;
-import cz.msebera.android.httpclient.HttpRequest;
-import cz.msebera.android.httpclient.HttpRequestInterceptor;
-import cz.msebera.android.httpclient.protocol.HttpContext;
 import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -85,6 +65,10 @@ public class MovieActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Stetho.initializeWithDefaults(this);
+        new OkHttpClient.Builder()
+                .addNetworkInterceptor(new StethoInterceptor())
+                .build();
         setContentView(R.layout.activity_movie);
         ButterKnife.bind(this);
 
@@ -205,13 +189,13 @@ public class MovieActivity extends AppCompatActivity
             public void onChanged(@Nullable final List<Movie> favoritesEntries) {
                 Log.d(TAG, "Updating list of favorites from LiveData in ViewModel");
                 //mMovieAdapter.setFavorites(favoritesEntries);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                //runOnUiThread(new Runnable() {
+                    //@Override
+                    //public void run() {
                         //mMovieAdapter.setFavorites(favoritesEntries);
                         mMovieAdapter.setMovieData((ArrayList<Movie>)favoritesEntries);
-                    }
-                });
+                //    }
+                //});
                 // TODO: See 12.13 4:29 this needs to be run on the UI thread
             }
         });

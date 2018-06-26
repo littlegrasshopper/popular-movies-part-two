@@ -13,6 +13,7 @@ Android app to display a list of popular or highest-rated movies via [the MovieD
 * [x] App should work either in portrait or landscape mode.
 * [x] Use onSaveInstanceState/onRestoreInstanceState to recreate Activities.
 * [ ] When a trailer is selected, the app uses an intent to launch the trailer.
+* [ ] Save scroll position of detail activity scrollview on rotation
 
 ## Optional Features
 * [ ] Store movie poster, synopsis, user rating and release date, and display them even when offline.
@@ -24,7 +25,8 @@ Android app to display a list of popular or highest-rated movies via [the MovieD
 - [Butterknife](http://jakewharton.github.io/butterknife/i) - Popular view injection library.
 - [RxJava 2]
 - [Retrofit 2]
-- [OkHttp]
+- [OkHttp3]
+- [Android Architecture Components - Room/LiveData/ViewModel]
 
 ## References
 These are the websites/sources that were used as references.
@@ -34,8 +36,8 @@ These are the websites/sources that were used as references.
 - [How to add interceptor in Retrofit 2.0](https://mobikul.com/use-interceptor-add-headers-body-retrofit-2-0/)
 - [Retrofit 2 - How to Add Query Parameters to Every Requst](https://futurestud.io/tutorials/retrofit-2-how-to-add-query-parameters-to-every-request)
 - [Leveraging the Gson Library](https://guides.codepath.com/android/Leveraging-the-Gson-Library)
-- (https://www.dev2qa.com/android-togglebutton-example/)
-[Custom Toggle Button](http://mohsenoid.blog/how-to-create-a-toggle-button-with-custom-image-and-no-text-in-android/)
+- [Toggle Button Example](https://www.dev2qa.com/android-togglebutton-example/)
+- [Custom Toggle Button](http://mohsenoid.blog/how-to-create-a-toggle-button-with-custom-image-and-no-text-in-android/)
 
 ## Notes
 An API key is required to fetch data from themovieDB API. The key is specified in the file `NetworkUtils.java`.

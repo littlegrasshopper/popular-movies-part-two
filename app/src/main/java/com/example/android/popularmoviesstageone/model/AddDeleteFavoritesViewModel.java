@@ -4,7 +4,6 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.example.android.popularmoviesstageone.database.AppDatabase;
-import com.example.android.popularmoviesstageone.database.FavoritesEntry;
 
 /**
  * Created by fonda on 6/19/18.

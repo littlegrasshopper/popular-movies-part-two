@@ -3,6 +3,8 @@ package com.example.android.popularmoviesstageone.service;
 import android.database.Observable;
 
 import com.example.android.popularmoviesstageone.model.Movie;
+import com.example.android.popularmoviesstageone.model.MovieReview;
+import com.example.android.popularmoviesstageone.model.MovieTrailer;
 
 import java.util.List;
 
@@ -23,4 +25,13 @@ public interface MoviesApiService {
     @GET("{category}?")
     rx.Observable<Movie.MovieResult> getMovies (
             @Path("category") String category);
+
+    @GET("{id}/videos?")
+    rx.Observable<MovieTrailer> getTrailers (
+            @Path("id") String id);
+
+    @GET("{id}/reviews?")
+    rx.Observable<MovieReview> getReviews (
+            @Path("id") String id);
+
 }

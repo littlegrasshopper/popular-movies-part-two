@@ -1,6 +1,5 @@
 package com.example.android.popularmoviesstageone;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -8,16 +7,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.android.popularmoviesstageone.database.AppDatabase;
-import com.example.android.popularmoviesstageone.database.FavoritesEntry;
 import com.example.android.popularmoviesstageone.model.AddDeleteFavoritesViewModel;
 import com.example.android.popularmoviesstageone.model.FavoritesViewModelFactory;
 import com.example.android.popularmoviesstageone.model.Movie;
@@ -121,7 +117,8 @@ public class DetailActivity extends AppCompatActivity {
             model.getFavorite().observe(this, new Observer<Movie>() {
                 @Override
                 public void onChanged(@Nullable final Movie movie) {
-                    model.getFavorite().removeObserver(this);
+                    // Don't remove the observer
+                    //model.getFavorite().removeObserver(this);
                     Log.d(TAG, "Receiving database update from LiveData");
                     populateUI(movie);
                 }
@@ -138,10 +135,13 @@ public class DetailActivity extends AppCompatActivity {
 
                     FavoritesViewModelFactory factory = new FavoritesViewModelFactory(mDb, mMovieId);
                     Log.d(TAG, "isFavorite(): movie_id: " + mMovieId);
+                    /*
                     AddDeleteFavoritesViewModel model = ViewModelProviders
                             .of(DetailActivity.this, factory)
                             .get(AddDeleteFavoritesViewModel.class);
                     existsInDB = model.getFavorite() != null && (model.getFavorite().getValue() != null);
+                    */
+
                     Log.d(TAG, "exists in DB: " + existsInDB);
 
                     if (isChecked) {
@@ -170,7 +170,7 @@ public class DetailActivity extends AppCompatActivity {
                     /*
                     if (checked) {
                         Log.d(TAG, "CHECKED");
-                        mFavorite.setBackgroundResource(R.drawable.ic_star_black_24dp);
+                        mFavorite.setBackgroundResource(R.drawable.ic_star_white_24dp);
                         //TODO Add the movie favorites entry
                         AppExecutors.getInstance().diskIO().execute(new Runnable() {
                             @Override
@@ -194,7 +194,7 @@ public class DetailActivity extends AppCompatActivity {
                                 mDb.favoritesDao().deleteFavorites(movie);
                             }
                         });
-                        mFavorite.setBackgroundResource(R.drawable.ic_star_border_black_24dp);
+                        mFavorite.setBackgroundResource(R.drawable.ic_star_border_white_24dp);
                     }*/
                 }
             });
@@ -222,6 +222,13 @@ public class DetailActivity extends AppCompatActivity {
             mFavorite.setChecked(true);
         }
     }
+
+    //TODO Display trailers
+    /*
+    Intent webIntent = new Intent(Intent.ACTION_VIEW, trailerWebpage);
+     */
+    //TODO: use implicit intent?
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
