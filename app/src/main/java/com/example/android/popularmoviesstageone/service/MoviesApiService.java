@@ -31,7 +31,7 @@ public interface MoviesApiService {
             @Path("id") String id);
 
     @GET("{id}/reviews?")
-    rx.Observable<MovieReview> getReviews (
+    rx.Observable<MovieReview.ReviewResult> getReviews (
             @Path("id") String id);
 
 }

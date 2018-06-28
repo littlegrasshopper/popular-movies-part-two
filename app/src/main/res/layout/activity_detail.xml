@@ -71,24 +71,16 @@
             android:layout_marginStart="@dimen/detailBodyIndent"
             app:layout_constraintStart_toEndOf="@+id/tvReleaseDateLabel"
             app:layout_constraintTop_toTopOf="@+id/tvReleaseDateLabel" />
-
-        <TextView
-            android:id="@+id/tvOverviewHeading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/plot"
-            android:layout_marginTop="@dimen/detailBodyIndent"
-            app:layout_constraintStart_toStartOf="@+id/tvReleaseDateLabel"
-            app:layout_constraintTop_toBottomOf="@+id/tvReleaseDateLabel"
             />
+
         <include android:id="@+id/vOverviewDivider"
+            android:visibility="gone"
             android:layout_width = "match_parent"
             android:layout_height=".5dp"
             layout="@layout/horizontal_divider"
             android:background="@android:color/darker_gray"
-
-            app:layout_constraintTop_toBottomOf="@id/tvOverviewHeading"
-            app:layout_constraintStart_toStartOf="@id/tvOverviewHeading"
+            app:layout_constraintTop_toBottomOf="@id/tvReleaseDateLabel"
+            app:layout_constraintStart_toStartOf="@id/tvReleaseDateLabel"
             />
 
         <View
@@ -101,8 +93,8 @@
             android:layout_marginRight="@dimen/detailBodyIndent"
             android:layout_marginEnd="@dimen/detailBodyIndent"
             android:background="@android:color/darker_gray"
-            app:layout_constraintStart_toStartOf="@+id/tvOverviewHeading"
-            app:layout_constraintTop_toBottomOf="@+id/tvOverviewHeading"/>
+            app:layout_constraintStart_toStartOf="@+id/tvReleaseDateLabel"
+            app:layout_constraintTop_toBottomOf="@+id/tvReleaseDateLabel"/>
 
         <TextView
             android:id="@+id/tvOverview"
@@ -144,9 +136,10 @@
 
         <include android:id="@+id/movieTrailer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             layout="@layout/movie_trailers"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/tvOverview"
             app:layout_constraintTop_toBottomOf="@id/tvOverview"/>
 
@@ -154,8 +147,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="12dp"
+            android:visibility="gone"
             layout="@layout/movie_reviews"
-            app:layout_constraintStart_toStartOf="@id/movieTrailer"
+            app:layout_constraintStart_toStartOf="@id/tvOverview"
             app:layout_constraintTop_toBottomOf="@id/movieTrailer"/>
 
     </android.support.constraint.ConstraintLayout>

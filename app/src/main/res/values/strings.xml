@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Popular Movies</string>
     <string name="movie_image">Movie Image</string>
+    <string name="movie_review">Movie Review</string>
     <string name="most_popular">Most Popular</string>
     <string name="highest_rating">Highest Rating</string>
     <string name="favorites">Favorites</string>
@@ -9,5 +10,9 @@
     <string name="plot">Plot</string>
     <string name="trailers">Trailers</string>
     <string name="reviews">Reviews</string>
+    <string name="author">Author</string>
+    <string name="trailer_image">Movie Trailer</string>
+    <string name="see_more">&lt;a href=\"%1$s\" style=\”text-decoration:none;\”>see more&lt;/a></string>
+
     <string name="error_message">Error occurred - check permissions or network connection.</string>
 </resources>

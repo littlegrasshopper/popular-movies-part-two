@@ -4,4 +4,6 @@
     <dimen name="imageHeight">230dp</dimen>
     <dimen name="originalTitleTextSize">30sp</dimen>
     <dimen name="errorMessageTextSize">20sp</dimen>
+    <dimen name="contentIndent">25dp</dimen>
+    <dimen name="maxReviewLines">5</dimen>
 </resources>

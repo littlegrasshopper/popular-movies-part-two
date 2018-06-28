@@ -75,7 +75,7 @@ public class Movie {
         this.backdropPath = jsonObject.optString("backdrop_path");
     }
 
-    // Constructor to be used to create an entity
+    // Constructor to be used to create a Room entity
     public Movie(String movieId, String posterPath, String originalTitle,
                  String overview, double voteAverage, String releaseDate, String backdropPath) {
         this.id = movieId;

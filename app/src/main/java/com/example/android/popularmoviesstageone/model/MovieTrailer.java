@@ -2,6 +2,8 @@ package com.example.android.popularmoviesstageone.model;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 /**
  * Created by fonda on 6/25/18.
  */
@@ -29,5 +31,21 @@ public class MovieTrailer {
 
     public void setTrailerName(String name) {
         mName = name;
+    }
+
+    /**
+     * Convenience class for returning list of movie trailers
+     */
+    public static class TrailerResult {
+
+        private ArrayList<MovieTrailer> results;
+
+        public TrailerResult() {
+            results = new ArrayList<>();
+        }
+
+        public ArrayList<MovieTrailer> getResults() {
+            return results;
+        }
     }
 }

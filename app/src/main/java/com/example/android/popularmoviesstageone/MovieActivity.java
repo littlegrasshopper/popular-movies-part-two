@@ -187,7 +187,7 @@ public class MovieActivity extends AppCompatActivity
                 .observe(this, new android.arch.lifecycle.Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable final List<Movie> favoritesEntries) {
-                Log.d(TAG, "Updating list of favorites from LiveData in ViewModel");
+                Log.d(TAG, "Updating list of favorites from LiveData in ViewModel: " + favoritesEntries);
                 //mMovieAdapter.setFavorites(favoritesEntries);
                 //runOnUiThread(new Runnable() {
                     //@Override

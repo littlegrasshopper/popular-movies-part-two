@@ -4,19 +4,12 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.example.android.popularmoviesstageone.model.Movie;
+import com.example.android.popularmoviesstageone.model.MovieReview;
 import com.example.android.popularmoviesstageone.service.MoviesApiService;
 import com.example.android.popularmoviesstageone.utilities.NetworkUtils;
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.util.List;
 
-import cz.msebera.android.httpclient.HttpException;
-import cz.msebera.android.httpclient.HttpRequest;
-import cz.msebera.android.httpclient.HttpRequestInterceptor;
-import cz.msebera.android.httpclient.protocol.HttpContext;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -111,5 +104,9 @@ public class MovieClient {
      */
     public Observable<Movie.MovieResult> getMovies(@NonNull String category) {
         return service.getMovies(category);
+    }
+
+    public Observable<MovieReview.ReviewResult> getReviews(@NonNull String movieId) {
+        return service.getReviews(movieId);
     }
 }

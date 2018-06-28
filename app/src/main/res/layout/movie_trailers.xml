@@ -6,6 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
+    <include android:id="@+id/trailerDivider"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/horizontal_divider"
+        app:layout_constraintTop_toBottomOf="@id/tvTrailerHeader"
+        app:layout_constraintStart_toStartOf="@id/tvTrailerHeader"/>
     <TextView
         android:id="@+id/tvTrailerHeader"
         android:layout_width="wrap_content"
@@ -14,15 +21,10 @@
         android:layout_marginLeft="@dimen/detailBodyIndent"
         android:layout_marginTop="8dp"
         android:text="@string/trailers"
+        android:textColor="@color/colorPrimaryDark"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <include android:id="@+id/trailerDivider"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        layout="@layout/horizontal_divider"
-        app:layout_constraintTop_toBottomOf="@id/tvTrailerHeader"
-        app:layout_constraintStart_toStartOf="@id/tvTrailerHeader"/>
 
     <LinearLayout
         android:layout_width="match_parent"
