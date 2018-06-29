@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:id="@+id/activity_detail"
     tools:context="com.example.android.popularmoviesstageone.DetailActivity">
 
     <android.support.constraint.ConstraintLayout
@@ -152,6 +153,9 @@
             app:layout_constraintStart_toStartOf="@id/tvOverview"
             app:layout_constraintTop_toBottomOf="@id/movieTrailer"/>
 
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="100dp" />
     </android.support.constraint.ConstraintLayout>
 
 </ScrollView>

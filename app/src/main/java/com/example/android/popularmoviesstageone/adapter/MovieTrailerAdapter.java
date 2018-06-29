@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,25 +32,24 @@ public class MovieTrailerAdapter extends
 
     public static final String TAG = MovieTrailerAdapter.class.getSimpleName();
 
-    //public interface MovieReviewAdapterOnClickHandler {
-    //void onClick(Movie m);
-    //}
+    public interface MovieTrailerAdapterOnClickHandler {
+        void onClick(MovieTrailer m);
+    }
 
     private Context mContext;
 
-    //private final MovieReviewAdapterOnClickHandler mClickHandler;
+    private final MovieTrailerAdapterOnClickHandler mClickHandler;
 
     private List<MovieTrailer> mTrailers = new ArrayList<>();
 
-    /*
     public MovieTrailerAdapter(Context context, MovieTrailerAdapterOnClickHandler clickHandler) {
         mContext = context;
         mClickHandler = clickHandler;
     }
-    */
 
     public MovieTrailerAdapter(Context context) {
         mContext = context;
+        mClickHandler = null;
     }
 
     @Override
@@ -67,8 +67,16 @@ public class MovieTrailerAdapter extends
     @Override
     public void onBindViewHolder(MovieTrailerViewHolder holder, int position) {
         MovieTrailer trailer = mTrailers.get(position);
-        ImageView movieTrailer = (ImageView) holder.ivTrailer;
-        Picasso.with(mContext).load(trailer.getTrailerName()).into(movieTrailer); // TODO Fix this
+        ImageView trailerThumb = holder.ivTrailer;
+        //Credit: https://stackoverflow.com/questions/2068344/how-do-i-get-a-youtube-video-thumbnail-from-the-youtube-api
+        String imagePath = MovieTrailer.TRAILER_IMAGE_BASE_URL + trailer.getKey() + MovieTrailer.TRAILER_IMAGE_DEFAULT;
+        Log.d(TAG, "imagePath " + imagePath);
+                Picasso.with(mContext)
+                        .load(imagePath).placeholder(R.drawable.ic_local_movies_black_24dp)
+                        .into(trailerThumb);
+        TextView trailerName = holder.tvTrailerName;
+        trailerName.setText(trailer.getTrailerName());
+
     }
 
     @Override
@@ -79,25 +87,24 @@ public class MovieTrailerAdapter extends
     /**
      * ViewHolder class
      */
-    public class MovieTrailerViewHolder extends RecyclerView.ViewHolder/* implements View.OnClickListener*/ {
+    public class MovieTrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         /* ButterKnife binding */
         @BindView(R.id.ivMovieTrailer) ImageView ivTrailer;
+        @BindView(R.id.tvTrailerName) TextView tvTrailerName;
 
         public MovieTrailerViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            //itemView.setOnClickListener(this);
+            itemView.setOnClickListener(this);
         }
 
-        /*
         @Override
         public void onClick(View view) {
             int adapterPosition = getAdapterPosition();
-            MovieReview review = mReviews.get(adapterPosition);
+            MovieTrailer review = mTrailers.get(adapterPosition);
             mClickHandler.onClick(review);
         }
-        */
     }
 
     public void setMovieTrailerData(ArrayList<MovieTrailer> trailerData) {

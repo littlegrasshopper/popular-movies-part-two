@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.android.popularmoviesstageone.model.Movie;
 import com.example.android.popularmoviesstageone.model.MovieReview;
+import com.example.android.popularmoviesstageone.model.MovieTrailer;
 import com.example.android.popularmoviesstageone.service.MoviesApiService;
 import com.example.android.popularmoviesstageone.utilities.NetworkUtils;
 
@@ -108,5 +109,9 @@ public class MovieClient {
 
     public Observable<MovieReview.ReviewResult> getReviews(@NonNull String movieId) {
         return service.getReviews(movieId);
+    }
+
+    public Observable<MovieTrailer.TrailerResult> getTrailers(@NonNull String movieId) {
+        return service.getTrailers(movieId);
     }
 }

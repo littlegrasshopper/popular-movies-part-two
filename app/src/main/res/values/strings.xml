@@ -11,6 +11,7 @@
     <string name="trailers">Trailers</string>
     <string name="reviews">Reviews</string>
     <string name="author">Author</string>
+    <string name="trailer">Trailer</string>
     <string name="trailer_image">Movie Trailer</string>
     <string name="see_more">&lt;a href=\"%1$s\" style=\”text-decoration:none;\”>see more&lt;/a></string>
 

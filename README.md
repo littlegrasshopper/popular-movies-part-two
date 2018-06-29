@@ -3,17 +3,17 @@
 Android app to display a list of popular or highest-rated movies via [the MovieDB API](https://www.themoviedb.org/settings/api) and additional details of the movie. 
 
 ## User Stories
-* [ ] User can view and play trailers via the YouTube app.
-* [ ] User can read reviews of a selected movie.
+* [x] User can view and play trailers via their favorite browser.
+* [x] User can read reviews of a selected movie.
 * [x] User can mark a movie as a favorite in the details view by tapping a button (star).
-* [ ] User can sort movies by their favorites collection as well.
+* [x] User can sort movies by their favorites collection as well.
 
 ## Required Features
 * [x] Create a database and content provider to store the names and ids of the user's favorite movies.
 * [x] App should work either in portrait or landscape mode.
 * [x] Use onSaveInstanceState/onRestoreInstanceState to recreate Activities.
-* [ ] When a trailer is selected, the app uses an intent to launch the trailer.
-* [ ] Save scroll position of detail activity scrollview on rotation
+* [x] When a trailer is selected, the app uses an intent to launch the trailer.
+* [ ] Save scroll position of detail activity scrollview on rotation.
 
 ## Optional Features
 * [ ] Store movie poster, synopsis, user rating and release date, and display them even when offline.

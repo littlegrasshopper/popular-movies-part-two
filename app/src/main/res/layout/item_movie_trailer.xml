@@ -3,14 +3,32 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="75dp">
+
+    <include
+        android:id="@+id/reviewDivider"
+        layout="@layout/horizontal_divider"
+        android:layout_width="wrap_content"
+        android:layout_margin="@dimen/contentIndent"
+        android:layout_height="wrap_content" />
 
     <ImageView
         android:id="@+id/ivMovieTrailer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/trailer_image"
-        android:scaleType="center"
-        app:srcCompat="@mipmap/ic_launcher" />
+        android:layout_marginLeft="@dimen/detailBodyIndent"
+        android:layout_marginTop="@dimen/detailBodyIndent"
+        android:layout_marginBottom="@dimen/detailBodyIndent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tvTrailerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/trailer"
+        app:layout_constraintBottom_toBottomOf="@+id/ivMovieTrailer"
+        app:layout_constraintLeft_toRightOf="@id/ivMovieTrailer" />
 
 </android.support.constraint.ConstraintLayout>

@@ -27,11 +27,14 @@ public interface MoviesApiService {
             @Path("category") String category);
 
     @GET("{id}/videos?")
-    rx.Observable<MovieTrailer> getTrailers (
+    rx.Observable<MovieTrailer.TrailerResult> getTrailers (
             @Path("id") String id);
 
     @GET("{id}/reviews?")
     rx.Observable<MovieReview.ReviewResult> getReviews (
             @Path("id") String id);
 
+    @GET("{id}/mqdefault.jpg")
+    rx.Observable<MovieTrailer> getTrailer (
+            @Path("id") String id);
 }

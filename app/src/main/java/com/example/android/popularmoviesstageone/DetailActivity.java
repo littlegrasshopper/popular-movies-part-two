@@ -3,6 +3,7 @@ package com.example.android.popularmoviesstageone;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,16 +16,19 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.example.android.popularmoviesstageone.adapter.MovieArrayAdapter;
 import com.example.android.popularmoviesstageone.adapter.MovieReviewAdapter;
+import com.example.android.popularmoviesstageone.adapter.MovieTrailerAdapter;
 import com.example.android.popularmoviesstageone.database.AppDatabase;
 import com.example.android.popularmoviesstageone.model.AddDeleteFavoritesViewModel;
 import com.example.android.popularmoviesstageone.model.FavoritesViewModelFactory;
 import com.example.android.popularmoviesstageone.model.Movie;
 import com.example.android.popularmoviesstageone.model.MovieReview;
+import com.example.android.popularmoviesstageone.model.MovieTrailer;
 import com.example.android.popularmoviesstageone.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
 
@@ -45,7 +49,8 @@ import rx.schedulers.Schedulers;
 /**
  * Activity for displaying details of a movie.
  */
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends AppCompatActivity
+        implements MovieTrailerAdapter.MovieTrailerAdapterOnClickHandler {
     // Constant for logging
     private static final String TAG = DetailActivity.class.getSimpleName();
 
@@ -54,12 +59,14 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.tvOriginalTitle) TextView originalTitle;
     @BindView(R.id.tvReleaseDate) TextView mReleaseDate;
     @BindView(R.id.rbRating) RatingBar mRating;
-    @BindView(R.id.tbFavorite)
-    ToggleButton mFavorite;
+    @BindView(R.id.tbFavorite) ToggleButton mFavorite;
     @BindView(R.id.movieReview) View mReviews;
+    @BindView(R.id.movieTrailer) View mTrailers;
     @BindView(R.id.detailToolbar) android.support.v7.widget.Toolbar mToolbar;
 
+    @BindView(R.id.activity_detail) ScrollView mScrollView;
     @BindView(R.id.rvReviews) RecyclerView mReviewsRecyclerView;
+    @BindView(R.id.rvTrailers) RecyclerView mTrailersRecyclerView;
 
     // Extra for the movie ID to be received in the intent
     public static final String EXTRA_MOVIE = "extraMovie";
@@ -74,6 +81,9 @@ public class DetailActivity extends AppCompatActivity {
     private Subscription subscriptionReviews;
     private MovieReviewAdapter mMovieReviewAdapter;
 
+    // Movie Trailers
+    private Subscription subscriptionTrailers;
+    private MovieTrailerAdapter mMovieTrailerAdapter;
 
 
     @Override
@@ -92,6 +102,11 @@ public class DetailActivity extends AppCompatActivity {
 
         if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_MOVIE)) {
             movie = Parcels.unwrap(savedInstanceState.getParcelable(INSTANCE_MOVIE));
+        }
+
+        if (savedInstanceState != null && savedInstanceState.containsKey("ARTICLE_SCROLL_POSITION"))
+        {
+
         }
 
         // Get the passed in intent
@@ -222,7 +237,9 @@ public class DetailActivity extends AppCompatActivity {
             });
 
             setupReviews();
+            setupTrailers();
             fetchReviews(mMovieId);
+            fetchTrailers(mMovieId);
 
         }
     }
@@ -234,7 +251,15 @@ public class DetailActivity extends AppCompatActivity {
         mReviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
         mReviewsRecyclerView.setNestedScrollingEnabled(false);
+    }
 
+    private void setupTrailers() {
+        mMovieTrailerAdapter = new MovieTrailerAdapter(this, this);
+        mTrailersRecyclerView.setHasFixedSize(true);
+        mTrailersRecyclerView.setAdapter(mMovieTrailerAdapter);
+        mTrailersRecyclerView.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false));
+        mTrailersRecyclerView.setNestedScrollingEnabled(false);
     }
 
     /**
@@ -280,12 +305,58 @@ public class DetailActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * RxJava call to retrieve the list of reviews asynchronously
+     * @param movieId
+     */
+    private void fetchTrailers(String movieId) {
+
+        //mReviewsRecyclerView.setVisibility(View.GONE);
+
+        subscriptionTrailers = MovieClient.getInstance()
+                .getTrailers(movieId)
+                // scheduler where the Observable will do the work
+                .subscribeOn(Schedulers.io())
+                // scheduler which a subscriber will observe this Observable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new rx.Observer<MovieTrailer.TrailerResult>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "In Completed");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        // cast to retrofit2.HttpException to get the response code
+                        if (e instanceof HttpException) {
+                            int code = ((retrofit2.HttpException)e).code();
+                        }
+                        Log.d(TAG, "In Error");
+                    }
+
+                    @Override
+                    public void onNext(MovieTrailer.TrailerResult trailerResults) {
+                        Log.d(TAG, "OnNext");
+                        Log.d(TAG, "movie trailers are: " + trailerResults.getResults());
+                        if (trailerResults.getResults().size() > 0) {
+                            mTrailers.setVisibility(View.VISIBLE);
+                            mMovieTrailerAdapter.setMovieTrailerData(trailerResults.getResults());
+                        }
+
+                    }
+                });
+    }
+
 
         @Override
     protected void onDestroy() {
         if (subscriptionReviews != null && !subscriptionReviews.isUnsubscribed()) {
             subscriptionReviews.unsubscribe();
         }
+            if (subscriptionTrailers != null && !subscriptionTrailers.isUnsubscribed()) {
+                subscriptionTrailers.unsubscribe();
+            }
         super.onDestroy();
     }
 
@@ -317,9 +388,34 @@ public class DetailActivity extends AppCompatActivity {
     //TODO: use implicit intent?
 
 
+    //Credit: https://stackoverflow.com/questions/17877595/i-want-text-view-as-a-clickable-link
+
+    @Override
+    public void onClick(MovieTrailer m) {
+        Intent trailerIntent = new Intent(Intent.ACTION_VIEW);
+        trailerIntent.setData(Uri.parse(MovieTrailer.TRAILER_BASE_URL + m.getKey()));
+        startActivity(trailerIntent);
+    }
+
+    // Saving scroll position
+    // Credit: https://stackoverflow.com/questions/29208086/save-the-position-of-scrollview-when-the-orientation-changes
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(INSTANCE_MOVIE, Parcels.wrap(movie));
         super.onSaveInstanceState(outState);
+        outState.putParcelable(INSTANCE_MOVIE, Parcels.wrap(movie));
+        outState.putIntArray("ARTICLE_SCROLL_POSITION",
+                new int[]{mScrollView.getScrollX(), mScrollView.getScrollY()});
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        final int[] position = savedInstanceState.getIntArray("ARTICLE_SCROLL_POSITION");
+        if(position != null)
+            mScrollView.post(new Runnable() {
+                public void run() {
+                    mScrollView.scrollTo(position[0], position[1]);
+                }
+            });
     }
 }

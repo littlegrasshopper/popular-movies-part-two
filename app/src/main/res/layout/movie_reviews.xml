@@ -19,8 +19,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/detailBodyIndent"
-        android:paddingBottom="@dimen/contentIndent">
+        android:layout_marginTop="@dimen/detailBodyIndent">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvReviews"

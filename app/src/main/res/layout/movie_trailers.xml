@@ -1,37 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-
-    <include android:id="@+id/trailerDivider"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        layout="@layout/horizontal_divider"
-        app:layout_constraintTop_toBottomOf="@id/tvTrailerHeader"
-        app:layout_constraintStart_toStartOf="@id/tvTrailerHeader"/>
     <TextView
         android:id="@+id/tvTrailerHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/detailBodyIndent"
         android:layout_marginLeft="@dimen/detailBodyIndent"
-        android:layout_marginTop="8dp"
         android:text="@string/trailers"
         android:textColor="@color/colorPrimaryDark"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textSize="18sp" />
 
-
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/trailerDivider"
-        app:layout_constraintStart_toStartOf="@id/trailerDivider">
+        android:layout_marginTop="@dimen/detailBodyIndent">
 
-    </LinearLayout>
-</android.support.constraint.ConstraintLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvTrailers"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+
+    </FrameLayout>
+
+</LinearLayout>
