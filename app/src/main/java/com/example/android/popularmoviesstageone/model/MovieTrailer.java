@@ -1,15 +1,17 @@
 package com.example.android.popularmoviesstageone.model;
 
+import android.arch.persistence.room.Ignore;
+
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.util.ArrayList;
 
 /**
  * Created by fonda on 6/25/18.
  */
-
 public class MovieTrailer {
     public static final String TRAILER_BASE_URL = "https://www.youtube.com/watch?v=";
     public static final String TRAILER_IMAGE_BASE_URL = "https://img.youtube.com/vi/";

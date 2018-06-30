@@ -189,13 +189,13 @@ public class MovieActivity extends AppCompatActivity
             public void onChanged(@Nullable final List<Movie> favoritesEntries) {
                 Log.d(TAG, "Updating list of favorites from LiveData in ViewModel: " + favoritesEntries);
                 //mMovieAdapter.setFavorites(favoritesEntries);
-                //runOnUiThread(new Runnable() {
-                    //@Override
-                    //public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
                         //mMovieAdapter.setFavorites(favoritesEntries);
                         mMovieAdapter.setMovieData((ArrayList<Movie>)favoritesEntries);
-                //    }
-                //});
+                    }
+                });
                 // TODO: See 12.13 4:29 this needs to be run on the UI thread
             }
         });

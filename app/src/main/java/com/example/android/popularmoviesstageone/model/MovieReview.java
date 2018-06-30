@@ -1,10 +1,13 @@
 package com.example.android.popularmoviesstageone.model;
 
+import android.arch.persistence.room.Ignore;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.util.ArrayList;
 

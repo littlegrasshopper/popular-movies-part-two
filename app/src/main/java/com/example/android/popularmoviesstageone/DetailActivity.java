@@ -53,6 +53,8 @@ public class DetailActivity extends AppCompatActivity
         implements MovieTrailerAdapter.MovieTrailerAdapterOnClickHandler {
     // Constant for logging
     private static final String TAG = DetailActivity.class.getSimpleName();
+    public static int scrollX = 0;
+    public static int scrollY = -1;
 
     @BindView(R.id.ivMovieImage) ImageView mImage;
     @BindView(R.id.tvOverview) TextView mOverview;
@@ -348,8 +350,25 @@ public class DetailActivity extends AppCompatActivity
                 });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        scrollX = mScrollView.getScrollX();
+        scrollY = mScrollView.getScrollY();
+    }
 
-        @Override
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mScrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                mScrollView.scrollTo(scrollX, scrollY);
+            }
+        });
+    }
+
+    @Override
     protected void onDestroy() {
         if (subscriptionReviews != null && !subscriptionReviews.isUnsubscribed()) {
             subscriptionReviews.unsubscribe();
@@ -381,20 +400,19 @@ public class DetailActivity extends AppCompatActivity
         }
     }
 
-    //TODO Display trailers
-    /*
-    Intent webIntent = new Intent(Intent.ACTION_VIEW, trailerWebpage);
+    /**
+     * Credit https://stackoverflow.com/questions/3004515/sending-an-intent-to-browser-to-open-specific-url
+     * Movie trailer click listener
+     * Use an intent to open up a web browser application to view the trailer
+     * @param trailer Trailer object to view
      */
-    //TODO: use implicit intent?
-
-
-    //Credit: https://stackoverflow.com/questions/17877595/i-want-text-view-as-a-clickable-link
-
     @Override
-    public void onClick(MovieTrailer m) {
-        Intent trailerIntent = new Intent(Intent.ACTION_VIEW);
-        trailerIntent.setData(Uri.parse(MovieTrailer.TRAILER_BASE_URL + m.getKey()));
-        startActivity(trailerIntent);
+    public void onClick(MovieTrailer trailer) {
+        if (trailer != null) {
+            Intent trailerIntent = new Intent(Intent.ACTION_VIEW);
+            trailerIntent.setData(Uri.parse(MovieTrailer.TRAILER_BASE_URL + trailer.getKey()));
+            startActivity(trailerIntent);
+        }
     }
 
     // Saving scroll position
@@ -403,19 +421,22 @@ public class DetailActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(INSTANCE_MOVIE, Parcels.wrap(movie));
-        outState.putIntArray("ARTICLE_SCROLL_POSITION",
-                new int[]{mScrollView.getScrollX(), mScrollView.getScrollY()});
+        //outState.putIntArray("DETAIL_SCROLL_POSITION",
+        //        new int[]{mScrollView.getScrollX(), mScrollView.getScrollY()});
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        final int[] position = savedInstanceState.getIntArray("ARTICLE_SCROLL_POSITION");
+
+        final int[] position = savedInstanceState.getIntArray("DETAIL_SCROLL_POSITION");
+        /*
         if(position != null)
             mScrollView.post(new Runnable() {
                 public void run() {
                     mScrollView.scrollTo(position[0], position[1]);
                 }
             });
+            */
     }
 }

@@ -6,4 +6,5 @@
     <dimen name="errorMessageTextSize">20sp</dimen>
     <dimen name="contentIndent">25dp</dimen>
     <dimen name="maxReviewLines">5</dimen>
+    <dimen name="viewMarginTop">12dp</dimen>
 </resources>
