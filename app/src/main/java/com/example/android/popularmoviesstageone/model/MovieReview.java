@@ -1,9 +1,5 @@
 package com.example.android.popularmoviesstageone.model;
 
-import android.arch.persistence.room.Ignore;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONObject;
@@ -12,11 +8,7 @@ import org.parceler.Parcel;
 import java.util.ArrayList;
 
 /**
- * Created by fonda on 6/25/18.
- */
-
-/**
- * Model for storing movie reviews.
+ * Model for storing movie reviews
  */
 public class MovieReview {
 
@@ -24,6 +16,8 @@ public class MovieReview {
     private String content;
     @SerializedName("url")
     private String reviewUrl;
+
+    public MovieReview() {}
 
     public MovieReview(JSONObject jsonObject) {
         this.author = jsonObject.optString("author");

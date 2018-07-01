@@ -10,18 +10,19 @@ import org.parceler.Parcel;
 import java.util.ArrayList;
 
 /**
- * Created by fonda on 6/25/18.
+ * Model for storing movie trailers
  */
 public class MovieTrailer {
     public static final String TRAILER_BASE_URL = "https://www.youtube.com/watch?v=";
     public static final String TRAILER_IMAGE_BASE_URL = "https://img.youtube.com/vi/";
     public static final String TRAILER_IMAGE_DEFAULT = "/mqdefault.jpg";
 
-
     @SerializedName("key")
     private String mKey;
     @SerializedName("name")
     private String mName;
+
+    public MovieTrailer() {}
 
     public MovieTrailer(JSONObject jsonObject) {
         this.mKey = jsonObject.optString("key");

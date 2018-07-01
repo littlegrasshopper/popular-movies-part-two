@@ -1,9 +1,7 @@
 package com.example.android.popularmoviesstageone.adapter;
 
 import android.content.Context;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstageone.R;
-import com.example.android.popularmoviesstageone.model.MovieReview;
 import com.example.android.popularmoviesstageone.model.MovieTrailer;
 import com.squareup.picasso.Picasso;
 
@@ -47,11 +44,6 @@ public class MovieTrailerAdapter extends
         mClickHandler = clickHandler;
     }
 
-    public MovieTrailerAdapter(Context context) {
-        mContext = context;
-        mClickHandler = null;
-    }
-
     @Override
     public MovieTrailerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -69,14 +61,15 @@ public class MovieTrailerAdapter extends
         MovieTrailer trailer = mTrailers.get(position);
         ImageView trailerThumb = holder.ivTrailer;
         //Credit: https://stackoverflow.com/questions/2068344/how-do-i-get-a-youtube-video-thumbnail-from-the-youtube-api
-        String imagePath = MovieTrailer.TRAILER_IMAGE_BASE_URL + trailer.getKey() + MovieTrailer.TRAILER_IMAGE_DEFAULT;
+        String imagePath = MovieTrailer.TRAILER_IMAGE_BASE_URL
+                + trailer.getKey()
+                + MovieTrailer.TRAILER_IMAGE_DEFAULT;
         Log.d(TAG, "imagePath " + imagePath);
                 Picasso.with(mContext)
                         .load(imagePath).placeholder(R.drawable.ic_local_movies_black_24dp)
                         .into(trailerThumb);
         TextView trailerName = holder.tvTrailerName;
         trailerName.setText(trailer.getTrailerName());
-
     }
 
     @Override

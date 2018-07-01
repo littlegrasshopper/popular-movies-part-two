@@ -6,10 +6,8 @@ import android.arch.lifecycle.ViewModelProvider;
 import com.example.android.popularmoviesstageone.database.AppDatabase;
 
 /**
- * Created by fonda on 6/19/18.
+ * ViewModelFactory for tracking favorite movies
  */
-// TODO Should use movieID or favoritesID?
-
 public class FavoritesViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     private final AppDatabase mDb;

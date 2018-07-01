@@ -22,10 +22,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
 
 /**
- * Created by fonda on 6/8/18.
- */
-
-/**
  * MovieClient is a singleton that uses Retrofit to interact with the API service.
  */
 public class MovieClient {
@@ -34,30 +30,6 @@ public class MovieClient {
     private MoviesApiService service;
 
     private MovieClient() {
-        /*
-        HttpRequestInterceptor requestInterceptor = new HttpRequestInterceptor() {
-            @Override
-            public void intercept(RequestFacade request) {
-                request.addQueryParam("api_key", NetworkUtils.API_KEY);
-            }
-
-            @Override
-            public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
-
-            }
-        };
-
-        // Create a Retrofit instance with a Gson converter and
-        // associate the adapter to the RequestInterceptor
-
-        // Add the interceptor ot OkHttpClient
-        OkHttpClient.Builder builder = new OkHttpClient().Builder();
-        builder.interceptors().add(requestInterceptor);
-        client.interceptors().add(requestInterceptor);
-
-        */
-        //final Gson gson =
-        //        new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create();
         OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder();
         okHttpClient.addInterceptor(new Interceptor() {
             @Override
@@ -68,12 +40,6 @@ public class MovieClient {
                 HttpUrl url = originalHttpUrl.newBuilder()
                         .addQueryParameter("api_key", NetworkUtils.API_KEY)
                         .build();
-                /*
-                Request request = original.newBuilder()
-                        .header("api_key", NetworkUtils.API_KEY)
-                        .method(original.method(), original.body())
-                        .build();
-                        */
                 Request.Builder requestBuilder = original.newBuilder()
                         .url(url);
                 Request request = requestBuilder.build();

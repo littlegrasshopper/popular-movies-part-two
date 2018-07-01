@@ -5,18 +5,14 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.popularmoviesstageone.R;
-import com.example.android.popularmoviesstageone.model.Movie;
 import com.example.android.popularmoviesstageone.model.MovieReview;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,23 +29,11 @@ public class MovieReviewAdapter extends
         RecyclerView.Adapter<MovieReviewAdapter.MovieReviewViewHolder> {
 
     public static final String TAG = MovieReviewAdapter.class.getSimpleName();
-
-    //public interface MovieReviewAdapterOnClickHandler {
-        //void onClick(Movie m);
-    //}
+    private static final int MAX_REVIEW_LINES = 5;
 
     private Context mContext;
 
-    //private final MovieReviewAdapterOnClickHandler mClickHandler;
-
     private List<MovieReview> mReviews = new ArrayList<>();
-
-    /*
-    public MovieReviewAdapter(Context context, MovieReviewAdapterOnClickHandler clickHandler) {
-        mContext = context;
-        mClickHandler = clickHandler;
-    }
-    */
 
     public MovieReviewAdapter(Context context) {
         mContext = context;
@@ -76,11 +60,11 @@ public class MovieReviewAdapter extends
 
         Log.d(TAG, "OnBindViewHolder has " + review.getReviewUrl());
         author.setText(review.getAuthor());
-        content.setMaxLines(5);
+        content.setMaxLines(MAX_REVIEW_LINES);
         content.setEllipsize(TextUtils.TruncateAt.END);
         content.setText(review.getContent());
 
-        // set up the 'see more' link to see rest of the review content
+        // Set up the 'see more' link to see rest of the review content
         // Credits:
         //https://stackoverflow.com/questions/3656371/dynamic-string-using-string-xml
         //https://guides.codepath.com/android/Working-with-the-TextView
@@ -99,14 +83,13 @@ public class MovieReviewAdapter extends
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "item count: " + mReviews.size());
         return (mReviews == null ? 0 : mReviews.size());
     }
 
     /**
      * ViewHolder class
      */
-    public class MovieReviewViewHolder extends RecyclerView.ViewHolder/* implements View.OnClickListener*/ {
+    public class MovieReviewViewHolder extends RecyclerView.ViewHolder {
 
         /* ButterKnife binding */
         @BindView(R.id.tvAuthor) TextView tvAuthor;
@@ -116,17 +99,7 @@ public class MovieReviewAdapter extends
         public MovieReviewViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            //itemView.setOnClickListener(this);
         }
-
-        /*
-        @Override
-        public void onClick(View view) {
-            int adapterPosition = getAdapterPosition();
-            MovieReview review = mReviews.get(adapterPosition);
-            mClickHandler.onClick(review);
-        }
-        */
     }
 
     public void setMovieReviewData(ArrayList<MovieReview> reviewData) {

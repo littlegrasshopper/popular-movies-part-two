@@ -4,7 +4,6 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatDelegate;
 
@@ -12,16 +11,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Movie is a template for the items in the data model.
+ * Movie is a template for the items in the data model and also serves as the entity for Room DB.
  */
 @Entity(tableName = "favorite_movies")
 @Parcel
@@ -61,7 +57,6 @@ public class Movie {
     @Ignore
     private ArrayList<MovieReview> reviews;
 
-
     public Movie() {}
 
     @Ignore
@@ -94,6 +89,7 @@ public class Movie {
     public void setId(@NonNull String movieId) {
         this.id = movieId;
     }
+
     /**
      * Returns a formatted URL for the poster image
      * @return Formatted Image URL
@@ -105,6 +101,7 @@ public class Movie {
     public void setPosterPath(String path) {
         this.posterPath = path;
     }
+
     /**
      * Returns a formatted URL for the backdrop image
      * @return Formatted Image URL
@@ -185,6 +182,9 @@ public class Movie {
         this.trailers = trailers;
     }
 
+    /**
+     * Convenience class for returning a list of movie objects
+     */
     public static class MovieResult {
 
         public static String DATE_FORMAT = "dd MMM yyy";

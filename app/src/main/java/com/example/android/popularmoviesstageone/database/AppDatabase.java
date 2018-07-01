@@ -8,10 +8,6 @@ import android.util.Log;
 
 import com.example.android.popularmoviesstageone.model.Movie;
 
-/**
- * Created by fonda on 6/18/18.
- */
-
 @Database(entities = {Movie.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 

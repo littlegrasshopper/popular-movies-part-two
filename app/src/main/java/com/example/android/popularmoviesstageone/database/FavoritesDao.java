@@ -9,12 +9,7 @@ import android.arch.persistence.room.Query;
 
 import com.example.android.popularmoviesstageone.model.Movie;
 
-import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by fonda on 6/18/18.
- */
 
 @Dao
 public interface FavoritesDao {

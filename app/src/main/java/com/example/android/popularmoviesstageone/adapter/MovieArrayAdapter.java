@@ -37,8 +37,6 @@ public class MovieArrayAdapter extends
 
     private List<Movie> mMovies = new ArrayList<>();
 
-    private List<Movie> mFavoritesEntries;
-
     public MovieArrayAdapter(Context context, MovieArrayAdapterOnClickHandler clickHandler) {
         mContext = context;
         mClickHandler = clickHandler;
@@ -63,7 +61,6 @@ public class MovieArrayAdapter extends
        Picasso.with(mContext).load(movie.getPosterPath()).into(imageView);
     }
 
-    // Todo change to return from db entries too
     @Override
     public int getItemCount() {
         return (mMovies == null ? 0 : mMovies.size());
@@ -100,17 +97,6 @@ public class MovieArrayAdapter extends
     @Override
     public int getItemViewType(int position) {
         return super.getItemViewType(position);
-    }
-
-
-    public List<Movie> getFavorites() {
-        return mFavoritesEntries;
-    }
-
-    public void setFavorites(List<Movie> favoritesEntries) {
-        //mFavoritesEntries = favoritesEntries;
-        mMovies = mFavoritesEntries;
-        notifyDataSetChanged();
     }
 
 }

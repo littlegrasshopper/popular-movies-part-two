@@ -77,7 +77,9 @@ public class MovieActivity extends AppCompatActivity
             setSupportActionBar(mToolbar);
         }
         mToolbar.setTitle(getResources().getString(R.string.app_name));
-        initialize();
+        setupMovies();
+        setupFilter();
+        fetchMovieData(NetworkUtils.getFilterType(0));
     }
 
     @Override
@@ -88,7 +90,10 @@ public class MovieActivity extends AppCompatActivity
         super.onDestroy();
     }
 
-    private void initialize() {
+    /**
+     * Setup the movies recycler view
+     */
+    private void setupMovies() {
         mMovieAdapter = new MovieArrayAdapter(this, this);
         mMoviesRecyclerView.setHasFixedSize(true);
         mMoviesRecyclerView.setAdapter(mMovieAdapter);
@@ -99,7 +104,12 @@ public class MovieActivity extends AppCompatActivity
                 false
         );
         mMoviesRecyclerView.setLayoutManager(gridLayoutManager);
+    }
 
+    /**
+     * Set up the filter/sort by
+     */
+    private void setupFilter() {
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
@@ -110,13 +120,14 @@ public class MovieActivity extends AppCompatActivity
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
-
-        fetchMovieData(NetworkUtils.getFilterType(0));
     }
 
+    /**
+     * Fetch the movies based on the sort filter
+     * @param sortBy The filter to use to retrieve the movies.
+     */
     private void fetchMovieData(String sortBy ) {
         if (isOnline()) {
             showMovieDataView();
@@ -134,7 +145,6 @@ public class MovieActivity extends AppCompatActivity
     private void getMovies(String category) {
         if (category == NetworkUtils.FAVORITES) {
             setupViewModel();
-            // TODO: Retrieve movies given the ids in the favorites
             return;
         }
         subscription = MovieClient.getInstance()
@@ -178,28 +188,32 @@ public class MovieActivity extends AppCompatActivity
     // Retrieve a list of favorites from the db using Executor
     // Retrieve the list of movies using the favorites IDs
     // set the list of movies to the adapter in the UI thread
+
+    /**
+     * Setup the ViewModel for the favorite movies
+     */
     private void setupViewModel() {
         mDb = AppDatabase.getsInstance(getApplicationContext());
         ShowFavoritesViewModel viewModel = ViewModelProviders
                 .of(this)
                 .get(ShowFavoritesViewModel.class);
+
         viewModel.getFavorites()
                 .observe(this, new android.arch.lifecycle.Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable final List<Movie> favoritesEntries) {
                 Log.d(TAG, "Updating list of favorites from LiveData in ViewModel: " + favoritesEntries);
-                //mMovieAdapter.setFavorites(favoritesEntries);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //mMovieAdapter.setFavorites(favoritesEntries);
+                // Lesson 12.13 4:29 This needs to be run on the UI thread
+                //runOnUiThread(new Runnable() {
+                //    @Override
+                    //public void run() {
                         mMovieAdapter.setMovieData((ArrayList<Movie>)favoritesEntries);
-                    }
-                });
-                // TODO: See 12.13 4:29 this needs to be run on the UI thread
+                    //}
+                //});
             }
         });
     }
+
     /**
      * Show the view for the movies data and hide the error message display.
      */
@@ -218,60 +232,6 @@ public class MovieActivity extends AppCompatActivity
         mMoviesRecyclerView.setVisibility(View.INVISIBLE);
         // show the error message
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * AsyncTask for fetching movies in the background.
-     */
-    public class FetchMoviesDataTask extends AsyncTask<String, Void, ArrayList<Movie>> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mLoadingIndicator.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected ArrayList<Movie> doInBackground(String... params) {
-            int sortBy;
-
-            // get the sort by filter
-            if (params.length == 0) {
-                sortBy = 0;
-            } else {
-                try {
-                    sortBy = Integer.parseInt(params[0]);
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                    sortBy = 0;
-                }
-            }
-
-            URL moviesDBUrl = NetworkUtils.buildUrl(sortBy);
-
-            try {
-                String httpResponse = NetworkUtils.getResponseFromHttpUrl(moviesDBUrl);
-                JSONObject jsonObject = new JSONObject(httpResponse);
-
-                ArrayList<Movie> jsonMovieData = MovieJsonUtils
-                        .getMovieDataFromJson(jsonObject.getJSONArray("results"));
-                return jsonMovieData;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Movie> moviesData) {
-            mLoadingIndicator.setVisibility(View.INVISIBLE);
-            if (moviesData != null) {
-                showMovieDataView();
-                mMovieAdapter.setMovieData(moviesData);
-            } else {
-                showErrorMessage();
-            }
-        }
     }
 
     /**

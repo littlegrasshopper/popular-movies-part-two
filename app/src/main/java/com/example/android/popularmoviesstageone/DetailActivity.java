@@ -36,6 +36,7 @@ import org.parceler.Parcels;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import butterknife.BindView;
@@ -47,12 +48,13 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- * Activity for displaying details of a movie.
+ * Activity for displaying details of a movie, including trailers and reviews.
  */
 public class DetailActivity extends AppCompatActivity
         implements MovieTrailerAdapter.MovieTrailerAdapterOnClickHandler {
     // Constant for logging
     private static final String TAG = DetailActivity.class.getSimpleName();
+    // Scrollview position
     public static int scrollX = 0;
     public static int scrollY = -1;
 
@@ -72,8 +74,14 @@ public class DetailActivity extends AppCompatActivity
 
     // Extra for the movie ID to be received in the intent
     public static final String EXTRA_MOVIE = "extraMovie";
-    // Extra for the movie ID to be received after rotation
+    // Bundle parameter for the movie ID to be received after rotation
     public static final String INSTANCE_MOVIE = "instanceMovie";
+    // Bundle parameter for the movie trailers to be received after rotation
+    public static final String INSTANCE_TRAILERS = "instanceTrailers";
+    // Bundle parameter for the movie reviews to be received after rotation
+    public static final String INSTANCE_REVIEWS = "instanceReviews";
+    // Bundle parameter for scroll position
+    public static final String SCROLL_POSITION = "scrollPosition";
 
     private AppDatabase mDb;
     private String mMovieId;
@@ -102,13 +110,28 @@ public class DetailActivity extends AppCompatActivity
 
         mDb = AppDatabase.getsInstance(getApplicationContext());
 
-        if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_MOVIE)) {
-            movie = Parcels.unwrap(savedInstanceState.getParcelable(INSTANCE_MOVIE));
-        }
-
-        if (savedInstanceState != null && savedInstanceState.containsKey("ARTICLE_SCROLL_POSITION"))
-        {
-
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(INSTANCE_MOVIE)) {
+                movie = Parcels.unwrap(savedInstanceState.getParcelable(INSTANCE_MOVIE));
+            }
+            if (savedInstanceState.containsKey(INSTANCE_TRAILERS)) {
+                //movie.setTrailers((ArrayList<MovieTrailer>)Parcels.unwrap(savedInstanceState.getParcelable("TRAILERS")));
+                mTrailers = Parcels.unwrap(savedInstanceState.getParcelable(INSTANCE_TRAILERS));
+            }
+            if (savedInstanceState.containsKey(INSTANCE_REVIEWS)) {
+                //movie.setReviews((ArrayList<MovieReviews>)Parcels.unwrap(savedInstanceState.getParcelable("REVIEWS")));
+                mReviews = Parcels.unwrap(savedInstanceState.getParcelable(INSTANCE_REVIEWS));
+            }
+            if (savedInstanceState.containsKey(SCROLL_POSITION)) {
+                final int[] position = savedInstanceState.getIntArray(SCROLL_POSITION);
+                if(position != null) {
+                    mScrollView.post(new Runnable() {
+                        public void run() {
+                            mScrollView.scrollTo(position[0], position[1]);
+                        }
+                    });
+                }
+            }
         }
 
         // Get the passed in intent
@@ -169,23 +192,10 @@ public class DetailActivity extends AppCompatActivity
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                     boolean isChecked = checked;
-                    Log.d(TAG, "check changed: " + isChecked);
                     boolean existsInDB = isFavorite();
-
-                    FavoritesViewModelFactory factory = new FavoritesViewModelFactory(mDb, mMovieId);
-                    Log.d(TAG, "isFavorite(): movie_id: " + mMovieId);
-                    /*
-                    AddDeleteFavoritesViewModel model = ViewModelProviders
-                            .of(DetailActivity.this, factory)
-                            .get(AddDeleteFavoritesViewModel.class);
-                    existsInDB = model.getFavorite() != null && (model.getFavorite().getValue() != null);
-                    */
-
-                    Log.d(TAG, "exists in DB: " + existsInDB);
 
                     if (isChecked) {
                         if (!existsInDB) {
-                            Log.d(TAG, "doesn't exist in DB, adding");
                             AppExecutors.getInstance().diskIO().execute(new Runnable() {
                                 @Override
                                 public void run() {
@@ -195,7 +205,6 @@ public class DetailActivity extends AppCompatActivity
                         }
                     } else {
                         if (existsInDB) {
-                            Log.d(TAG, "exists in DB, deleting");
                             AppExecutors.getInstance().diskIO().execute(new Runnable() {
                                 @Override
                                 public void run() {
@@ -204,48 +213,18 @@ public class DetailActivity extends AppCompatActivity
                             });
                         }
                     }
-
-
-                    /*
-                    if (checked) {
-                        Log.d(TAG, "CHECKED");
-                        mFavorite.setBackgroundResource(R.drawable.ic_star_white_24dp);
-                        //TODO Add the movie favorites entry
-                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                // Check to see if the movie already exists in the DB
-                                final LiveData<Movie> favoriteMovie =
-                                        mDb.favoritesDao().loadFavoritesById(mMovieId);
-                                // Add an entry to the favorites DB
-                                if (favoriteMovie == null) {
-                                    mDb.favoritesDao().insertFavorites(movie);
-                                }
-                            }
-                        });
-
-                    }
-                    else {
-                        Log.d(TAG, "UNCHECKED");
-                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                mDb.favoritesDao().deleteFavorites(movie);
-                            }
-                        });
-                        mFavorite.setBackgroundResource(R.drawable.ic_star_border_white_24dp);
-                    }*/
                 }
             });
-
             setupReviews();
             setupTrailers();
             fetchReviews(mMovieId);
             fetchTrailers(mMovieId);
-
         }
     }
 
+    /**
+     * Set up recycler view for movie reviews
+     */
     private void setupReviews() {
         mMovieReviewAdapter = new MovieReviewAdapter(this);
         mReviewsRecyclerView.setHasFixedSize(true);
@@ -255,6 +234,9 @@ public class DetailActivity extends AppCompatActivity
         mReviewsRecyclerView.setNestedScrollingEnabled(false);
     }
 
+    /**
+     * Set up recycler view for movie trailers
+     */
     private void setupTrailers() {
         mMovieTrailerAdapter = new MovieTrailerAdapter(this, this);
         mTrailersRecyclerView.setHasFixedSize(true);
@@ -266,11 +248,9 @@ public class DetailActivity extends AppCompatActivity
 
     /**
      * RxJava call to retrieve the list of reviews asynchronously
-     * @param movieId
+     * @param movieId Id of the movie to fetch the reviews for
      */
     private void fetchReviews(String movieId) {
-
-        //mReviewsRecyclerView.setVisibility(View.GONE);
 
         subscriptionReviews = MovieClient.getInstance()
                 .getReviews(movieId)
@@ -291,29 +271,26 @@ public class DetailActivity extends AppCompatActivity
                         if (e instanceof HttpException) {
                             int code = ((retrofit2.HttpException)e).code();
                         }
-                        Log.d(TAG, "In Error");
+                        Log.d(TAG, "Error in fetching movie reviews.");
                     }
 
                     @Override
                     public void onNext(MovieReview.ReviewResult reviewResults) {
-                        Log.d(TAG, "OnNext");
-                        Log.d(TAG, "movie reviews are: " + reviewResults.getResults());
+                        Log.d(TAG, "onNext: movie reviews are: + reviewResults.getResults()");
                         if (reviewResults.getResults().size() > 0) {
                             mReviews.setVisibility(View.VISIBLE);
                             mMovieReviewAdapter.setMovieReviewData(reviewResults.getResults());
+                            //movie.setReviews(reviewResults.getResults());
                         }
-
                     }
                 });
     }
 
     /**
-     * RxJava call to retrieve the list of reviews asynchronously
-     * @param movieId
+     * RxJava call to retrieve the list of trailers asynchronously
+     * @param movieId Id of the movie to fetch trailers for
      */
     private void fetchTrailers(String movieId) {
-
-        //mReviewsRecyclerView.setVisibility(View.GONE);
 
         subscriptionTrailers = MovieClient.getInstance()
                 .getTrailers(movieId)
@@ -334,18 +311,17 @@ public class DetailActivity extends AppCompatActivity
                         if (e instanceof HttpException) {
                             int code = ((retrofit2.HttpException)e).code();
                         }
-                        Log.d(TAG, "In Error");
+                        Log.d(TAG, "Error in fetching movie trailers.");
                     }
 
                     @Override
                     public void onNext(MovieTrailer.TrailerResult trailerResults) {
-                        Log.d(TAG, "OnNext");
-                        Log.d(TAG, "movie trailers are: " + trailerResults.getResults());
+                        Log.d(TAG, "onNext: movie trailers are: + reviewResults.getResults()");
                         if (trailerResults.getResults().size() > 0) {
                             mTrailers.setVisibility(View.VISIBLE);
+                            //movie.setTrailers(trailerResults.getResults());
                             mMovieTrailerAdapter.setMovieTrailerData(trailerResults.getResults());
                         }
-
                     }
                 });
     }
@@ -353,6 +329,7 @@ public class DetailActivity extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
+        // save off the current scroll position
         scrollX = mScrollView.getScrollX();
         scrollY = mScrollView.getScrollY();
     }
@@ -370,15 +347,20 @@ public class DetailActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
+
         if (subscriptionReviews != null && !subscriptionReviews.isUnsubscribed()) {
             subscriptionReviews.unsubscribe();
         }
-            if (subscriptionTrailers != null && !subscriptionTrailers.isUnsubscribed()) {
-                subscriptionTrailers.unsubscribe();
-            }
-        super.onDestroy();
+        if (subscriptionTrailers != null && !subscriptionTrailers.isUnsubscribed()) {
+            subscriptionTrailers.unsubscribe();
+        }
     }
 
+    /**
+     * Determine if the current movie is a favorite using the view model
+     * @return True if the current movie is a favorite
+     */
     private boolean isFavorite() {
         boolean isFavorite = false;
         FavoritesViewModelFactory factory = new FavoritesViewModelFactory(mDb, mMovieId);
@@ -390,12 +372,16 @@ public class DetailActivity extends AppCompatActivity
         return isFavorite;
     }
 
-    private void populateUI(Movie fav) {
-        if (fav == null) {
-            Log.i(TAG, "Populate UI favoirte is null");
+    /**
+     * Show the appropriate favorite indicator for the given movie
+     * @param movie
+     */
+    private void populateUI(Movie movie) {
+        if (movie == null) {
+            Log.i(TAG, "Populate UI NOT favorite");
             mFavorite.setChecked(false);
         } else {
-            Log.i(TAG, "Populate UI favorite exists");
+            Log.i(TAG, "Populate UI favorite movie");
             mFavorite.setChecked(true);
         }
     }
@@ -415,28 +401,32 @@ public class DetailActivity extends AppCompatActivity
         }
     }
 
-    // Saving scroll position
-    // Credit: https://stackoverflow.com/questions/29208086/save-the-position-of-scrollview-when-the-orientation-changes
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(INSTANCE_MOVIE, Parcels.wrap(movie));
-        //outState.putIntArray("DETAIL_SCROLL_POSITION",
-        //        new int[]{mScrollView.getScrollX(), mScrollView.getScrollY()});
+        //outState.putParcelable(INSTANCE_TRAILERS, Parcels.wrap(mTrailers));
+        //outState.putParcelable(INSTANCE_REVIEWS, Parcels.wrap(mReviews));
+        // Saving scroll position
+        // Credit: https://stackoverflow.com/questions/29208086/save-the-position-of-scrollview-when-the-orientation-changes
+        outState.putIntArray(SCROLL_POSITION,
+                new int[]{mScrollView.getScrollX(), mScrollView.getScrollY()});
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        final int[] position = savedInstanceState.getIntArray("DETAIL_SCROLL_POSITION");
-        /*
-        if(position != null)
+        // Saving scroll position
+        // Credit: https://stackoverflow.com/questions/29208086/save-the-position-of-scrollview-when-the-orientation-changes
+        final int[] position = savedInstanceState.getIntArray(SCROLL_POSITION);
+        if(position != null) {
             mScrollView.post(new Runnable() {
                 public void run() {
                     mScrollView.scrollTo(position[0], position[1]);
                 }
             });
-            */
+        }
     }
 }

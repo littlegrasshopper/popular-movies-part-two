@@ -15,8 +15,8 @@ import java.util.List;
  * Credit: Lesson 12 Android Architecture Components
  * Credit: Lesson T09b.10-Exercise-AddViewModelToAddTaskActivity
  */
-
 public class ShowFavoritesViewModel extends AndroidViewModel {
+
     // Constant for logging
     private static final String TAG = ShowFavoritesViewModel.class.getSimpleName();
 
@@ -25,7 +25,7 @@ public class ShowFavoritesViewModel extends AndroidViewModel {
     public ShowFavoritesViewModel(Application application) {
         super(application);
         AppDatabase database = AppDatabase.getsInstance(this.getApplication());
-        Log.d(TAG, "Actively retrieving favorites from the database");
+        Log.d(TAG, "Actively retrieving all favorites from the database");
         favorites = database.favoritesDao().loadAllFavoriteMovies();
     }
 
