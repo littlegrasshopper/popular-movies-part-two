@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -184,11 +183,6 @@ public class MovieActivity extends AppCompatActivity
         //setupViewModel();
     }
 
-    // TODO
-    // Retrieve a list of favorites from the db using Executor
-    // Retrieve the list of movies using the favorites IDs
-    // set the list of movies to the adapter in the UI thread
-
     /**
      * Setup the ViewModel for the favorite movies
      */
@@ -204,12 +198,12 @@ public class MovieActivity extends AppCompatActivity
             public void onChanged(@Nullable final List<Movie> favoritesEntries) {
                 Log.d(TAG, "Updating list of favorites from LiveData in ViewModel: " + favoritesEntries);
                 // Lesson 12.13 4:29 This needs to be run on the UI thread
-                //runOnUiThread(new Runnable() {
-                //    @Override
-                    //public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
                         mMovieAdapter.setMovieData((ArrayList<Movie>)favoritesEntries);
-                    //}
-                //});
+                    }
+                });
             }
         });
     }

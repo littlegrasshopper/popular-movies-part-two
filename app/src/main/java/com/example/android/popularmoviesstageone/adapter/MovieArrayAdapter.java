@@ -58,7 +58,7 @@ public class MovieArrayAdapter extends
     public void onBindViewHolder(MovieViewHolder holder, int position) {
         Movie movie = mMovies.get(position);
        ImageView imageView = (ImageView) holder.ivImage;
-       Picasso.with(mContext).load(movie.getPosterPath()).into(imageView);
+       Picasso.with(mContext).load(movie.getFullPosterPath()).into(imageView);
     }
 
     @Override

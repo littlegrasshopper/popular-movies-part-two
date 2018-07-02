@@ -9,11 +9,8 @@
         android:id="@+id/reviewDivider"
         layout="@layout/horizontal_divider"
         android:layout_width="wrap_content"
-        android:layout_marginRight="30dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="@dimen/contentIndent"
-        android:layout_height="50dp" />
+        android:layout_margin="@dimen/contentIndent"
+        android:layout_height="wrap_content" />
 
         <ImageView
             android:id="@+id/ivMovieReviewIcon"

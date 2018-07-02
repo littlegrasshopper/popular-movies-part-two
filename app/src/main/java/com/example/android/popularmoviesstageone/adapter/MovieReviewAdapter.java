@@ -54,9 +54,9 @@ public class MovieReviewAdapter extends
     @Override
     public void onBindViewHolder(MovieReviewViewHolder holder, int position) {
         MovieReview review = mReviews.get(position);
-        TextView author = (TextView) holder.tvAuthor;
-        TextView content = (TextView) holder.tvContent;
-        TextView reviewUrl = (TextView) holder.tvReviewUrl;
+        TextView author = holder.tvAuthor;
+        TextView content = holder.tvContent;
+        TextView reviewUrl = holder.tvReviewUrl;
 
         Log.d(TAG, "OnBindViewHolder has " + review.getReviewUrl());
         author.setText(review.getAuthor());

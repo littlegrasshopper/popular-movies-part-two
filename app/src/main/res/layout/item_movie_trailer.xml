@@ -6,7 +6,7 @@
     android:layout_height="75dp">
 
     <include
-        android:id="@+id/reviewDivider"
+        android:id="@+id/trailerDivider"
         layout="@layout/horizontal_divider"
         android:layout_width="wrap_content"
         android:layout_margin="@dimen/contentIndent"
@@ -28,6 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/trailer"
+        android:layout_marginLeft="@dimen/detailBodyIndent"
         app:layout_constraintBottom_toBottomOf="@+id/ivMovieTrailer"
         app:layout_constraintLeft_toRightOf="@id/ivMovieTrailer" />
 

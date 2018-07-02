@@ -23,8 +23,8 @@ import java.util.ArrayList;
 @Parcel
 public class Movie {
 
-    public static final String POSTER_PATH = "https://image.tmdb.org/t/p/w342/%s";
-    public static final String BACKDROP_PATH = "https://image.tmdb.org/t/p/w780/%s";
+    public static final String POSTER_PATH = "https://image.tmdb.org/t/p/w342%s";
+    public static final String BACKDROP_PATH = "https://image.tmdb.org/t/p/w780%s";
 
     // @SerializedName tells Gson matching json/pojo properties
     @SerializedName("id")
@@ -83,7 +83,7 @@ public class Movie {
     }
 
     public String getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(@NonNull String movieId) {
@@ -91,11 +91,20 @@ public class Movie {
     }
 
     /**
-     * Returns a formatted URL for the poster image
-     * @return Formatted Image URL
+     * Returns a full URL for the poster image
+     * @return Full poster image URL
+     */
+    public String getFullPosterPath() {
+        return String.format(POSTER_PATH, this.posterPath);
+    }
+
+    /**
+     * Returns the original poster path retrieved from The Movie DB API
+     * This value will be stored in the Room DB
+     * @return Path of original poster
      */
     public String getPosterPath() {
-        return String.format(POSTER_PATH, posterPath);
+        return this.posterPath;
     }
 
     public void setPosterPath(String path) {
@@ -103,15 +112,27 @@ public class Movie {
     }
 
     /**
-     * Returns a formatted URL for the backdrop image
-     * @return Formatted Image URL
+     * Returns a full URL for the backdrop image
+     * @return Full backdrop image URL
+     */
+    public String getFullBackdropPath() {
+        String path = backdropPath;
+        if (backdropPath == null || backdropPath.isEmpty() || backdropPath == "null" ) {
+            return getFullPosterPath();
+        }
+        return String.format(BACKDROP_PATH, path);
+    }
+
+    /**
+     * Returns the original backdrop image path retrieved from The Movie DB API
+     * @return Path for original backdrop image
      */
     public String getBackdropPath() {
         String path = backdropPath;
         if (backdropPath == null || backdropPath.isEmpty() || backdropPath == "null" ) {
             return getPosterPath();
         }
-        return String.format(BACKDROP_PATH, path);
+        return path;
     }
 
     public void setBackdropPath(String path) {
@@ -123,7 +144,7 @@ public class Movie {
      * @return String representing movie title
      */
     public String getOriginalTitle() {
-        return originalTitle;
+        return this.originalTitle;
     }
 
     public void setOriginalTitle(String title) {
@@ -135,7 +156,7 @@ public class Movie {
      * @return String respresenting movie overview
      */
     public String getOverview() {
-        return overview;
+        return this.overview;
     }
 
     public void setOverview(String overview) {
@@ -147,7 +168,7 @@ public class Movie {
      * @return String representing movie release date
      */
     public String getReleaseDate() {
-        return releaseDate;
+        return this.releaseDate;
     }
 
     public void setReleaseDate(String date) {
@@ -159,7 +180,7 @@ public class Movie {
      * @return Double representing movie vote average
      */
     public Double getVoteAverage() {
-        return voteAverage;
+        return this.voteAverage;
     }
 
     public void setVoteAverage(Double average) {
@@ -199,13 +220,6 @@ public class Movie {
             return results;
         }
 
-        public static MovieResult parseJSON(String response) {
-            GsonBuilder gsonBuilder = new GsonBuilder();
-            gsonBuilder.setDateFormat(DATE_FORMAT);
-            Gson gson = gsonBuilder.create();
-            MovieResult res = gson.fromJson(response, MovieResult.class);
-            return res;
-        }
     }
 
 }

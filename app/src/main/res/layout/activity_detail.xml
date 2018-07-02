@@ -74,29 +74,6 @@
             app:layout_constraintTop_toTopOf="@+id/tvReleaseDateLabel" />
             />
 
-        <include android:id="@+id/vOverviewDivider"
-            android:visibility="gone"
-            android:layout_width = "match_parent"
-            android:layout_height=".5dp"
-            layout="@layout/horizontal_divider"
-            android:background="@android:color/darker_gray"
-            app:layout_constraintTop_toBottomOf="@id/tvReleaseDateLabel"
-            app:layout_constraintStart_toStartOf="@id/tvReleaseDateLabel"
-            />
-
-        <View
-            android:visibility="gone"
-            android:id="@+id/vOverviewDivider"
-            android:layout_width = "match_parent"
-            android:layout_height=".5dp"
-            android:layout_marginLeft="@dimen/detailBodyIndent"
-            android:layout_marginStart="@dimen/detailBodyIndent"
-            android:layout_marginRight="@dimen/detailBodyIndent"
-            android:layout_marginEnd="@dimen/detailBodyIndent"
-            android:background="@android:color/darker_gray"
-            app:layout_constraintStart_toStartOf="@+id/tvReleaseDateLabel"
-            app:layout_constraintTop_toBottomOf="@+id/tvReleaseDateLabel"/>
-
         <TextView
             android:id="@+id/tvOverview"
             android:layout_width="match_parent"
@@ -107,21 +84,7 @@
             android:layout_marginEnd="@dimen/detailBodyIndent"
             android:layout_marginTop="@dimen/detailBodyIndent"
             app:layout_constraintStart_toStartOf="@+id/tvReleaseDateLabel"
-            app:layout_constraintTop_toBottomOf="@+id/vOverviewDivider" />
-
-        <Button
-            android:id="@+id/btFavorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:height="8dp"
-            android:width="4dp"
-            android:visibility="gone"
-            android:layout_marginRight="@dimen/detailBodyIndent"
-            android:layout_marginEnd="@dimen/detailBodyIndent"
-            android:layout_marginTop="@dimen/detailBodyIndent"
-            android:background="@drawable/ic_star_border_white_24dp"
-            app:layout_constraintRight_toRightOf="@id/ivMovieImage"
-            app:layout_constraintTop_toTopOf="@id/ivMovieImage" />
+            app:layout_constraintTop_toBottomOf="@+id/tvReleaseDateLabel" />
 
         <ToggleButton
             android:id="@+id/tbFavorite"

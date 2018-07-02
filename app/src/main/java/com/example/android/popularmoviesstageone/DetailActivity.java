@@ -76,10 +76,6 @@ public class DetailActivity extends AppCompatActivity
     public static final String EXTRA_MOVIE = "extraMovie";
     // Bundle parameter for the movie ID to be received after rotation
     public static final String INSTANCE_MOVIE = "instanceMovie";
-    // Bundle parameter for the movie trailers to be received after rotation
-    public static final String INSTANCE_TRAILERS = "instanceTrailers";
-    // Bundle parameter for the movie reviews to be received after rotation
-    public static final String INSTANCE_REVIEWS = "instanceReviews";
     // Bundle parameter for scroll position
     public static final String SCROLL_POSITION = "scrollPosition";
 
@@ -114,14 +110,6 @@ public class DetailActivity extends AppCompatActivity
             if (savedInstanceState.containsKey(INSTANCE_MOVIE)) {
                 movie = Parcels.unwrap(savedInstanceState.getParcelable(INSTANCE_MOVIE));
             }
-            if (savedInstanceState.containsKey(INSTANCE_TRAILERS)) {
-                //movie.setTrailers((ArrayList<MovieTrailer>)Parcels.unwrap(savedInstanceState.getParcelable("TRAILERS")));
-                mTrailers = Parcels.unwrap(savedInstanceState.getParcelable(INSTANCE_TRAILERS));
-            }
-            if (savedInstanceState.containsKey(INSTANCE_REVIEWS)) {
-                //movie.setReviews((ArrayList<MovieReviews>)Parcels.unwrap(savedInstanceState.getParcelable("REVIEWS")));
-                mReviews = Parcels.unwrap(savedInstanceState.getParcelable(INSTANCE_REVIEWS));
-            }
             if (savedInstanceState.containsKey(SCROLL_POSITION)) {
                 final int[] position = savedInstanceState.getIntArray(SCROLL_POSITION);
                 if(position != null) {
@@ -148,7 +136,7 @@ public class DetailActivity extends AppCompatActivity
 
             // Credit: https://guides.codepath.com/android/Displaying-Images-with-the-Picasso-Library
             // === Start ===
-            Picasso.with(this).load(movie.getBackdropPath()).fit().centerCrop()
+            Picasso.with(this).load(movie.getFullBackdropPath()).fit().centerCrop()
                 .transform(new RoundedCornersTransformation(10,10))
                 .into(mImage);
             // === End ===
@@ -179,8 +167,6 @@ public class DetailActivity extends AppCompatActivity
             model.getFavorite().observe(this, new Observer<Movie>() {
                 @Override
                 public void onChanged(@Nullable final Movie movie) {
-                    // Don't remove the observer
-                    //model.getFavorite().removeObserver(this);
                     Log.d(TAG, "Receiving database update from LiveData");
                     populateUI(movie);
                 }
@@ -280,7 +266,6 @@ public class DetailActivity extends AppCompatActivity
                         if (reviewResults.getResults().size() > 0) {
                             mReviews.setVisibility(View.VISIBLE);
                             mMovieReviewAdapter.setMovieReviewData(reviewResults.getResults());
-                            //movie.setReviews(reviewResults.getResults());
                         }
                     }
                 });
@@ -319,7 +304,6 @@ public class DetailActivity extends AppCompatActivity
                         Log.d(TAG, "onNext: movie trailers are: + reviewResults.getResults()");
                         if (trailerResults.getResults().size() > 0) {
                             mTrailers.setVisibility(View.VISIBLE);
-                            //movie.setTrailers(trailerResults.getResults());
                             mMovieTrailerAdapter.setMovieTrailerData(trailerResults.getResults());
                         }
                     }
@@ -406,8 +390,7 @@ public class DetailActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(INSTANCE_MOVIE, Parcels.wrap(movie));
-        //outState.putParcelable(INSTANCE_TRAILERS, Parcels.wrap(mTrailers));
-        //outState.putParcelable(INSTANCE_REVIEWS, Parcels.wrap(mReviews));
+
         // Saving scroll position
         // Credit: https://stackoverflow.com/questions/29208086/save-the-position-of-scrollview-when-the-orientation-changes
         outState.putIntArray(SCROLL_POSITION,
