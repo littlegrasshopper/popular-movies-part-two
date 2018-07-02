@@ -16,17 +16,17 @@ Android app to display a list of popular or highest-rated movies via [the MovieD
 * [ ] Save scroll position of detail activity scrollview on rotation.
 
 ## Optional Features
-* [ ] Store movie poster, synopsis, user rating and release date, and display them even when offline.
+* [x] Store movie poster, synopsis, user rating and release date, and display them even when offline.
 * [ ] Implement sharing functionality to allow user to share the first trailer's YouTube URL from the movie details screen.
 
 ## Open-source libraries used
 - [Picasso](http://square.github.io/picasso/) - Image loading and caching library for Android
 - [Parceler](https://github.com/johncarl81/parceler) - Serialization library
 - [Butterknife](http://jakewharton.github.io/butterknife/i) - Popular view injection library.
-- [RxJava 2]
-- [Retrofit 2]
-- [OkHttp3]
-- [Android Architecture Components - Room/LiveData/ViewModel]
+- RxJava 2
+- Retrofit 2
+- OkHttp3
+- Android Architecture Components - Room/LiveData/ViewModel
 
 ## References
 These are the websites/sources that were used as references.
@@ -40,4 +40,4 @@ These are the websites/sources that were used as references.
 - [Custom Toggle Button](http://mohsenoid.blog/how-to-create-a-toggle-button-with-custom-image-and-no-text-in-android/)
 
 ## Notes
-An API key is required to fetch data from themovieDB API. The key is specified in the file `NetworkUtils.java`.
+An API key is required to fetch data from themovieDB API. Please provide your own `gradle.properties` file with the key `API_KEY` and your own key.

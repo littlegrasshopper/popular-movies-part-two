@@ -11,7 +11,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -20,7 +19,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.example.android.popularmoviesstageone.adapter.MovieArrayAdapter;
 import com.example.android.popularmoviesstageone.adapter.MovieReviewAdapter;
 import com.example.android.popularmoviesstageone.adapter.MovieTrailerAdapter;
 import com.example.android.popularmoviesstageone.database.AppDatabase;
@@ -36,7 +34,6 @@ import org.parceler.Parcels;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 import butterknife.BindView;
@@ -54,9 +51,6 @@ public class DetailActivity extends AppCompatActivity
         implements MovieTrailerAdapter.MovieTrailerAdapterOnClickHandler {
     // Constant for logging
     private static final String TAG = DetailActivity.class.getSimpleName();
-    // Scrollview position
-    public static int scrollX = 0;
-    public static int scrollY = -1;
 
     @BindView(R.id.ivMovieImage) ImageView mImage;
     @BindView(R.id.tvOverview) TextView mOverview;
@@ -110,6 +104,8 @@ public class DetailActivity extends AppCompatActivity
             if (savedInstanceState.containsKey(INSTANCE_MOVIE)) {
                 movie = Parcels.unwrap(savedInstanceState.getParcelable(INSTANCE_MOVIE));
             }
+            // Saving scroll position
+            // Credit: https://stackoverflow.com/questions/29208086/save-the-position-of-scrollview-when-the-orientation-changes
             if (savedInstanceState.containsKey(SCROLL_POSITION)) {
                 final int[] position = savedInstanceState.getIntArray(SCROLL_POSITION);
                 if(position != null) {
@@ -311,25 +307,6 @@ public class DetailActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        // save off the current scroll position
-        scrollX = mScrollView.getScrollX();
-        scrollY = mScrollView.getScrollY();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mScrollView.post(new Runnable() {
-            @Override
-            public void run() {
-                mScrollView.scrollTo(scrollX, scrollY);
-            }
-        });
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
 
@@ -384,32 +361,16 @@ public class DetailActivity extends AppCompatActivity
             startActivity(trailerIntent);
         }
     }
-
-
+    
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
         outState.putParcelable(INSTANCE_MOVIE, Parcels.wrap(movie));
 
         // Saving scroll position
         // Credit: https://stackoverflow.com/questions/29208086/save-the-position-of-scrollview-when-the-orientation-changes
         outState.putIntArray(SCROLL_POSITION,
                 new int[]{mScrollView.getScrollX(), mScrollView.getScrollY()});
-    }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        // Saving scroll position
-        // Credit: https://stackoverflow.com/questions/29208086/save-the-position-of-scrollview-when-the-orientation-changes
-        final int[] position = savedInstanceState.getIntArray(SCROLL_POSITION);
-        if(position != null) {
-            mScrollView.post(new Runnable() {
-                public void run() {
-                    mScrollView.scrollTo(position[0], position[1]);
-                }
-            });
-        }
+        super.onSaveInstanceState(outState);
     }
 }
