@@ -85,6 +85,10 @@ public class DetailActivity extends AppCompatActivity
     private Subscription subscriptionTrailers;
     private MovieTrailerAdapter mMovieTrailerAdapter;
 
+    // Restoring scroll position
+    private static int scrollX;
+    private static int scrollY;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,18 +107,7 @@ public class DetailActivity extends AppCompatActivity
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(INSTANCE_MOVIE)) {
                 movie = Parcels.unwrap(savedInstanceState.getParcelable(INSTANCE_MOVIE));
-            }
-            // Saving scroll position
-            // Credit: https://stackoverflow.com/questions/29208086/save-the-position-of-scrollview-when-the-orientation-changes
-            if (savedInstanceState.containsKey(SCROLL_POSITION)) {
-                final int[] position = savedInstanceState.getIntArray(SCROLL_POSITION);
-                if(position != null) {
-                    mScrollView.post(new Runnable() {
-                        public void run() {
-                            mScrollView.scrollTo(position[0], position[1]);
-                        }
-                    });
-                }
+
             }
         }
 
@@ -124,6 +117,7 @@ public class DetailActivity extends AppCompatActivity
         if (intent != null && intent.hasExtra(EXTRA_MOVIE)) {
             if (movie == null) {
                 movie = Parcels.unwrap(getIntent().getParcelableExtra(EXTRA_MOVIE));
+
             }
 
             mMovieId = movie.getId();
@@ -197,11 +191,12 @@ public class DetailActivity extends AppCompatActivity
                     }
                 }
             });
-            setupReviews();
-            setupTrailers();
-            fetchReviews(mMovieId);
-            fetchTrailers(mMovieId);
         }
+
+        setupReviews();
+        setupTrailers();
+        fetchReviews(mMovieId);
+        fetchTrailers(mMovieId);
     }
 
     /**
@@ -244,6 +239,11 @@ public class DetailActivity extends AppCompatActivity
                     @Override
                     public void onCompleted() {
                         Log.d(TAG, "In Completed");
+                        mScrollView.post(new Runnable() {
+                            public void run() {
+                                mScrollView.scrollTo(scrollX, scrollY);
+                            }
+                        });
                     }
 
                     @Override
@@ -283,6 +283,11 @@ public class DetailActivity extends AppCompatActivity
                     @Override
                     public void onCompleted() {
                         Log.d(TAG, "In Completed");
+                        mScrollView.post(new Runnable() {
+                            public void run() {
+                                mScrollView.scrollTo(scrollX, scrollY);
+                            }
+                        });
                     }
 
                     @Override
@@ -301,6 +306,7 @@ public class DetailActivity extends AppCompatActivity
                         if (trailerResults.getResults().size() > 0) {
                             mTrailers.setVisibility(View.VISIBLE);
                             mMovieTrailerAdapter.setMovieTrailerData(trailerResults.getResults());
+
                         }
                     }
                 });
@@ -361,7 +367,7 @@ public class DetailActivity extends AppCompatActivity
             startActivity(trailerIntent);
         }
     }
-    
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(INSTANCE_MOVIE, Parcels.wrap(movie));
@@ -372,5 +378,28 @@ public class DetailActivity extends AppCompatActivity
                 new int[]{mScrollView.getScrollX(), mScrollView.getScrollY()});
 
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            // Saving scroll position
+            // Credit: https://stackoverflow.com/questions/29208086/save-the-position-of-scrollview-when-the-orientation-changes
+            if (savedInstanceState.containsKey(SCROLL_POSITION)) {
+                final int[] position = savedInstanceState.getIntArray(SCROLL_POSITION);
+                scrollX = position[0];
+                scrollY = position[1];
+                if(position != null) {
+                    mScrollView.post(new Runnable() {
+                        public void run() {
+                            mScrollView.scrollTo(scrollX, scrollY);
+                        }
+                    });
+                }
+            }
+        }
+
     }
 }
