@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,15 +22,12 @@ import com.example.android.popularmoviesstageone.adapter.MovieArrayAdapter;
 import com.example.android.popularmoviesstageone.database.AppDatabase;
 import com.example.android.popularmoviesstageone.model.Movie;
 import com.example.android.popularmoviesstageone.model.ShowFavoritesViewModel;
-import com.example.android.popularmoviesstageone.utilities.MovieJsonUtils;
 import com.example.android.popularmoviesstageone.utilities.NetworkUtils;
 import com.facebook.stetho.Stetho;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
-import org.json.JSONObject;
 import org.parceler.Parcels;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,6 +48,11 @@ public class MovieActivity extends AppCompatActivity
         implements MovieArrayAdapter.MovieArrayAdapterOnClickHandler {
 
     private static final String TAG = MovieActivity.class.getSimpleName();
+    private static final String LIFECYCLE_SCROLL_STATE = "scrollState";
+    private static final String LIFECYCLE_SORT_BY_STATE = "sortByState";
+
+    private static Parcelable scrollState;
+    private int mSortBy = 0;
 
     private MovieArrayAdapter mMovieAdapter;
     private Subscription subscription;
@@ -76,9 +79,14 @@ public class MovieActivity extends AppCompatActivity
             setSupportActionBar(mToolbar);
         }
         mToolbar.setTitle(getResources().getString(R.string.app_name));
+
+        // Restore sortBy selection if one is saved
+        if (savedInstanceState != null && savedInstanceState.containsKey(LIFECYCLE_SORT_BY_STATE)) {
+            mSortBy = savedInstanceState.getInt(LIFECYCLE_SORT_BY_STATE);
+        }
         setupMovies();
         setupFilter();
-        fetchMovieData(NetworkUtils.getFilterType(0));
+        fetchMovieData(NetworkUtils.getFilterType(mSortBy));
     }
 
     @Override
@@ -113,8 +121,8 @@ public class MovieActivity extends AppCompatActivity
 
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                int selected = adapterView.getSelectedItemPosition();
-                fetchMovieData(NetworkUtils.getFilterType(selected));
+                mSortBy = adapterView.getSelectedItemPosition();
+                fetchMovieData(NetworkUtils.getFilterType(mSortBy));
             }
 
             @Override
@@ -130,7 +138,6 @@ public class MovieActivity extends AppCompatActivity
     private void fetchMovieData(String sortBy ) {
         if (isOnline()) {
             showMovieDataView();
-            //new FetchMoviesDataTask().execute(sortBy);
             getMovies(sortBy);
         } else {
             showErrorMessage();
@@ -173,14 +180,11 @@ public class MovieActivity extends AppCompatActivity
                         Log.d(TAG, "OnNext");
                         Log.d(TAG, "movie results are: " + movieResults);
                         mMovieAdapter.setMovieData(movieResults.getResults());
+                        if (scrollState != null) {
+                            mMoviesRecyclerView.getLayoutManager().onRestoreInstanceState(scrollState);
+                        }
                     }
                 });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //setupViewModel();
     }
 
     /**
@@ -250,5 +254,30 @@ public class MovieActivity extends AppCompatActivity
 
         intent.putExtra(DetailActivity.EXTRA_MOVIE, Parcels.wrap(movie));
         startActivity(intent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //Credit:
+        // https://stackoverflow.com/questions/28236390/recyclerview-store-restore-state-between-activities
+        // Save scroll state
+        scrollState = mMoviesRecyclerView.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(LIFECYCLE_SCROLL_STATE, scrollState);
+        // Save sortBy selection
+        outState.putInt(LIFECYCLE_SORT_BY_STATE, mSortBy);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        //Credit:
+        // https://stackoverflow.com/questions/28236390/recyclerview-store-restore-state-between-activities
+        // Retrieve scroll state
+        if(savedInstanceState != null) {
+            scrollState = savedInstanceState.getParcelable(LIFECYCLE_SCROLL_STATE);
+        }
     }
 }
